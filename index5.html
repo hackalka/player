@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#E50914">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SocramFlix+">
+    <meta name="apple-mobile-web-app-title" content="TV+">
     <link rel="apple-touch-icon" href="logos/icon-192.png">
     <link id="pwa-manifest" rel="manifest" href="">
 
@@ -416,11 +416,11 @@
     <div id="player-section">
         <div class="video-container show-controls" id="video-wrapper">
             <div id="app-header">
-                <div class="header-logo">SOCRAM<span>FLIX</span>+</div>
+                <div class="header-logo">TV<span>+</span>+</div>
             </div>
 
             <div class="video-idle-overlay" id="idle-overlay">
-                <div class="idle-logo">SOCRAM<span>FLIX</span>+</div>
+                <div class="idle-logo">TV<span>+</span>+</div>
                 <div class="idle-sub">PRO · Selecciona un canal para empezar</div>
             </div>
 
@@ -519,8 +519,8 @@
     <script>
         // === CONFIGURACIÓN PWA DINÁMICA ===
         const manifestJSON = {
-            "name": "SocramFlix+ Pro",
-            "short_name": "SocramFlix+",
+            "name": "TV+ Pro",
+            "short_name": "TV+",
             "start_url": ".",
             "display": "standalone",
             "background_color": "#0a0a0a",
@@ -561,7 +561,7 @@
         window.addEventListener('appinstalled', () => {
             installBtn.style.display = 'none';
             deferredPrompt = null;
-            console.log('SocramFlix+ ha sido instalada');
+            console.log('TV+ ha sido instalada');
         });
 
         const REPO_SAGAS = [
