@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV++ - Panel Admin Inteligente</title>
+    <title>TV++ - Panel de Administración Total</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,7 +19,7 @@
     <nav class="bg-[#141414] border-b border-[#2a2a2a] px-6 py-4 flex items-center justify-between shadow-xl">
         <div class="flex items-center space-x-3">
             <div class="text-2xl font-black italic tracking-tighter text-[#E50914] drop-shadow-[0_0_15px_rgba(229,9,20,0.4)]">
-                TV<span class="text-white">+</span><span class="text-xs block not-italic font-bold tracking-widest text-[#888] uppercase mt-[-4px]">ADMIN MANAGER</span>
+                TV<span class="text-white">++</span><span class="text-xs block not-italic font-bold tracking-widest text-[#888] uppercase mt-[-4px]">PANEL MANAGER</span>
             </div>
         </div>
         
@@ -39,13 +39,29 @@
         <div class="lg:col-span-1 flex flex-col space-y-4 h-full overflow-y-auto pr-2">
             
             <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5 shadow-xl">
-                <label class="block text-xs font-bold text-[#888] uppercase tracking-wider mb-2">1. Selecciona Lista a Editar</label>
+                <label class="block text-xs font-bold text-[#888] uppercase tracking-wider mb-2">1. Selecciona Lista o Colección</label>
                 <select id="archivo-objetivo" onchange="cargarListaDesdeGitHub()" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-2.5 text-xs font-semibold text-[#e8e8e8] focus:border-[#E50914] focus:outline-none">
-                    <option value="" disabled selected>-- Elige un archivo --</option>
-                    <option value="listas/tv.m3u">📺 listas/tv.m3u (TV Estándar)</option>
-                    <option value="listas/tvplus.m3u">📡 listas/tvplus.m3u (TV+ DRM)</option>
-                    <option value="listas/premium.m3u">💎 listas/premium.m3u (Premium)</option>
-                    <option value="listas/movies.json">🍿 listas/movies.json (Cine JSON)</option>
+                    <option value="" disabled selected>-- Elige un archivo m3u --</option>
+                    <optgroup label="Listas de Canales">
+                        <option value="listas/tv.m3u">📺 listas/tv.m3u (TV General)</option>
+                        <option value="listas/tvplus.m3u">📡 listas/tvplus.m3u (TV+ DRM)</option>
+                        <option value="listas/premium.m3u">💎 listas/premium.m3u (Premium)</option>
+                    </optgroup>
+                    <optgroup label="Sagas y Cine M3U">
+                        <option value="Coleccion Pixar.m3u">🍿 Colección Pixar</option>
+                        <option value="Coleccion DreamWorks Animation.m3u">🍿 Colección DreamWorks</option>
+                        <option value="Universo DC.m3u">🍿 Universo DC</option>
+                        <option value="Universo Marvel.m3u">🍿 Universo Marvel</option>
+                        <option value="Sagas Policiacas.m3u">🍿 Sagas Policíacas</option>
+                        <option value="Sagas Accion.m3u">🍿 Sagas Acción</option>
+                        <option value="Sagas Ciencia Ficion.m3u">🍿 Sagas Ciencia Ficción</option>
+                        <option value="Coleccion Disney.m3u">🍿 Colección Disney</option>
+                    </optgroup>
+                    <optgroup label="Infantiles M3U">
+                        <option value="infantiles/Erase una vez el hombre.m3u">👶 Érase una vez el hombre</option>
+                        <option value="infantiles/Erase una vez el espacio.m3u">👶 Érase una vez el espacio</option>
+                        <option value="infantiles/Erase una vez el cuerpo_humano.m3u">👶 Érase una vez el cuerpo humano</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -53,29 +69,29 @@
                 <h3 class="text-xs font-bold text-[#E50914] uppercase tracking-widest"><i class="fa-solid fa-plus-circle"></i> Añadir Nuevo Elemento</h3>
                 
                 <div>
-                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Nombre / Título</label>
-                    <input type="text" id="nuevo-nombre" placeholder="Ej: HBO Max HD" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Nombre del Canal / Película</label>
+                    <input type="text" id="nuevo-nombre" placeholder="Ej: Batman Begins" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Categoría / Grupo</label>
-                    <input type="text" id="nuevo-grupo" placeholder="Ej: Cine o Acción" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <input type="text" id="nuevo-grupo" placeholder="Ej: Universo DC o Acción" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">URL de Logo / Poster</label>
-                    <input type="text" id="nuevo-logo" placeholder="logos/hbo.png o URL" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Logo / Poster (Ruta o URL)</label>
+                    <input type="text" id="nuevo-logo" placeholder="logos/mi-poster.jpg" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Enlace Streaming / ID Acestream</label>
-                    <input type="text" id="nuevo-url" placeholder="http://... o acestream://..." class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <input type="text" id="nuevo-url" placeholder="acestream://... o http://..." class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
 
                 <button onclick="agregarElementoALista()" class="w-full bg-[#222] hover:bg-[#E50914] border border-[#333] hover:border-[#E50914] text-white text-xs font-bold py-2 rounded-md transition flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-folder-plus"></i> Insertar en Tabla
+                    <i class="fa-solid fa-folder-plus"></i> Insertar en Fila
                 </button>
             </div>
 
             <button onclick="guardarCambiosEnGitHub()" class="w-full bg-[#E50914] hover:bg-[#b8070f] text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-[#E50914]/10 transition-all flex items-center justify-center gap-2 text-xs">
-                <i class="fa-solid fa-cloud-arrow-up"></i> HACER COMMIT A GITHUB
+                <i class="fa-solid fa-cloud-arrow-up"></i> GUARDAR EN TV++
             </button>
         </div>
 
@@ -83,12 +99,12 @@
             <div class="p-4 border-b border-[#2a2a2a] bg-[#1a1a1a] flex justify-between items-center">
                 <div>
                     <h2 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
-                        <i class="fa-solid fa-table-list text-[#E50914]"></i> Desglose interno del archivo seleccionado
+                        <i class="fa-solid fa-table-list text-[#E50914]"></i> Editor Atómico TV++
                     </h2>
-                    <p class="text-[11px] text-[#888]">Edita los inputs directamente sobre la celda o elimina filas completas.</p>
+                    <p class="text-[11px] text-[#888]">Modifica directamente los campos de texto sobre la tabla o elimina canales obsoletos.</p>
                 </div>
                 <div id="status-badge" class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-[#0a0a0a] text-[#888] border border-[#2a2a2a]">
-                    Esperando archivo...
+                    Sin archivo activo
                 </div>
             </div>
 
@@ -96,16 +112,16 @@
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="bg-[#0a0a0a] text-[#888] uppercase tracking-wider border-b border-[#2a2a2a] sticky top-0 z-10">
-                            <th class="py-3 px-4 font-semibold w-1/4">Canal / Título</th>
+                            <th class="py-3 px-4 font-semibold w-1/4">Nombre / Título</th>
                             <th class="py-3 px-4 font-semibold w-1/5">Categoría / Grupo</th>
-                            <th class="py-3 px-4 font-semibold w-1/5">Logo / Poster</th>
-                            <th class="py-3 px-4 font-semibold">Enlace (Streaming / M3U8 / Acestream)</th>
+                            <th class="py-3 px-4 font-semibold w-1/5">Imagen / Poster / Logo</th>
+                            <th class="py-3 px-4 font-semibold">Enlace de Streaming (HTTP / Acestream)</th>
                             <th class="py-3 px-4 text-center w-12">Acción</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-elementos" class="divide-y divide-[#2a2a2a]/60">
                         <tr>
-                            <td colspan="5" class="text-center py-12 text-[#888] italic">Selecciona una lista en el panel izquierdo para cargar sus canales.</td>
+                            <td colspan="5" class="text-center py-12 text-[#888] italic">Selecciona cualquier archivo M3U o Colección a la izquierda para desplegar sus componentes internos.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -117,9 +133,9 @@
         const REPO_OWNER = "hackalka";
         const REPO_NAME = "player";
         
-        let tokenGitHub = localStorage.getItem("socramflix_gh_token") || "";
+        let tokenGitHub = localStorage.getItem("tvplusplus_gh_token") || "";
         let datosLocalesParseados = [];
-        let currentFileSha = ""; // Necesario para hacer la actualización en la API de GitHub
+        let currentFileSha = ""; 
 
         if(tokenGitHub) {
             document.getElementById('gh-token').value = tokenGitHub;
@@ -127,47 +143,44 @@
 
         function guardarConfig() {
             tokenGitHub = document.getElementById('gh-token').value.trim();
-            localStorage.setItem("TV++_gh_token", tokenGitHub);
-            alert("Token guardado localmente para esta sesión.");
+            localStorage.setItem("tvplusplus_gh_token", tokenGitHub);
+            alert("Token de GitHub vinculado a TV++.");
         }
 
-        // 1. CARGAR ARCHIVO DESDE GITHUB (M3U o JSON)
+        // CARGAR CUALQUIER M3U DESDE TU REPOSITORIO
         async function cargarListaDesdeGitHub() {
             const rutaArchivo = document.getElementById('archivo-objetivo').value;
             if(!rutaArchivo) return;
 
-            actualizarStatus("Cargando...", "amber");
+            actualizarStatus("Descargando...", "amber");
             
             try {
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${rutaArchivo}`, {
                     headers: tokenGitHub ? { "Authorization": `token ${tokenGitHub}` } : {}
                 });
 
-                if(!response.ok) throw new Error("No se pudo obtener el archivo del repositorio.");
+                if(!response.ok) throw new Error("No se encuentra el fichero solicitado.");
                 
                 const jsonRes = await response.json();
                 currentFileSha = jsonRes.sha;
                 
-                // Decodificar Base64 de GitHub
+                // Decodificación UTF-8 robusta de Base64
                 const contenidoRaw = decodeURIComponent(escape(atob(jsonRes.content)));
 
-                if(rutaArchivo.endsWith('.json')) {
-                    datosLocalesParseados = JSON.parse(contenidoRaw);
-                } else if(rutaArchivo.endsWith('.m3u')) {
-                    datosLocalesParseados = parsearM3U(contenidoRaw);
-                }
+                // Parser M3U Universal para todas tus listas del repositorio
+                datosLocalesParseados = parsearM3U(contenidoRaw);
 
                 renderizarTabla();
-                actualizarStatus("Cargado correctamente", "emerald");
+                actualizarStatus("Listo para editar", "emerald");
 
             } catch (error) {
                 console.error(error);
-                alert("Error al cargar datos. Asegúrate de que el Token sea correcto si tu repositorio es privado, o que la ruta exista.");
-                actualizarStatus("Error de carga", "red");
+                alert("Error al cargar datos de TV++. Verifica la ruta o que tu token tenga permisos.");
+                actualizarStatus("Error de lectura", "red");
             }
         }
 
-        // PARSER M3U A ESTRUCTURA DE OBJETOS
+        // PARSER M3U
         function parsearM3U(rawText) {
             const lines = rawText.split('\n');
             const lista = [];
@@ -177,15 +190,15 @@
                 let line = lines[i].trim();
                 if (line.startsWith('#EXTINF:')) {
                     itemActual = {};
-                    // Extraer logo
+                    
                     const logoMatch = line.match(/tvg-logo="([^"]+)"/);
                     itemActual.logo = logoMatch ? logoMatch[1] : "";
-                    // Extraer grupo/categoría
+                    
                     const groupMatch = line.match(/group-title="([^"]+)"/);
                     itemActual.group = groupMatch ? groupMatch[1] : "General";
-                    // Extraer nombre del canal
+                    
                     const commaIndex = line.lastIndexOf(',');
-                    itemActual.name = commaIndex !== -1 ? line.substring(commaIndex + 1).trim() : "Canal sin Nombre";
+                    itemActual.name = commaIndex !== -1 ? line.substring(commaIndex + 1).trim() : "Sin título";
                 } else if (line && !line.startsWith('#')) {
                     if (itemActual) {
                         itemActual.url = line;
@@ -197,7 +210,7 @@
             return lista;
         }
 
-        // GENERAR TEXTO M3U DESDE OBJETOS
+        // SERIALIZADOR M3U
         function serializarM3U(objetos) {
             let m3uString = "#EXTM3U\n";
             objetos.forEach(item => {
@@ -206,30 +219,24 @@
             return m3uString;
         }
 
-        // 2. RENDERIZAR TABLA INTERACTIVA
+        // RENDERIZAR ESTRUCTURA VISUAL DE CELDAS
         function renderizarTabla() {
             const tbody = document.getElementById('tabla-elementos');
             tbody.innerHTML = "";
 
             if(datosLocalesParseados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">La lista está vacía.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">No hay registros dentro de este archivo.</td></tr>`;
                 return;
             }
 
             datosLocalesParseados.forEach((elem, index) => {
-                // Adaptar nombres de llaves tanto para estructura M3U (name, group, logo, url) como para JSON (title, poster, url)
-                const nombre = elem.name || elem.title || "";
-                const grupo = elem.group || elem.category || "General";
-                const img = elem.logo || elem.poster || "";
-                const url = elem.url || "";
-
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-[#1c1c1c]/40 transition text-xs border-b border-[#2a2a2a]/40";
                 tr.innerHTML = `
-                    <td class="py-2 px-3"><input type="text" value="${nombre}" onchange="actualizarCelda(${index}, 'name', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-200 font-semibold"></td>
-                    <td class="py-2 px-3"><input type="text" value="${grupo}" onchange="actualizarCelda(${index}, 'group', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-300"></td>
-                    <td class="py-2 px-3"><input type="text" value="${img}" onchange="actualizarCelda(${index}, 'logo', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-400 font-mono text-[10px]"></td>
-                    <td class="py-2 px-3"><input type="text" value="${url}" onchange="actualizarCelda(${index}, 'url', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-emerald-400 font-mono text-[11px]"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.name}" onchange="actualizarCelda(${index}, 'name', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-200 font-semibold"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.group}" onchange="actualizarCelda(${index}, 'group', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-300"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.logo}" onchange="actualizarCelda(${index}, 'logo', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-400 font-mono text-[10px]"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.url}" onchange="actualizarCelda(${index}, 'url', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-emerald-400 font-mono text-[11px]"></td>
                     <td class="py-2 px-3 text-center">
                         <button onclick="eliminarFila(${index})" class="text-red-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
@@ -238,13 +245,8 @@
             });
         }
 
-        // MODIFICACIONES ATÓMICAS EN MEMORIA
         function actualizarCelda(index, campo, valor) {
-            // Guardar con soporte para ambos mapeos (JSON/M3U)
-            if(campo === 'name') { datosLocalesParseados[index].name = valor; datosLocalesParseados[index].title = valor; }
-            if(campo === 'group') { datosLocalesParseados[index].group = valor; datosLocalesParseados[index].category = valor; }
-            if(campo === 'logo') { datosLocalesParseados[index].logo = valor; datosLocalesParseados[index].poster = valor; }
-            if(campo === 'url') { datosLocalesParseados[index].url = valor; }
+            datosLocalesParseados[index][campo] = valor;
         }
 
         function eliminarFila(index) {
@@ -252,7 +254,7 @@
             renderizarTabla();
         }
 
-        // AÑADIR NUEVA CATEGORÍA O CANAL COMPLETO
+        // AÑADIR NUEVO ELEMENTO / NUEVA CATEGORÍA
         function agregarElementoALista() {
             const nombre = document.getElementById('nuevo-nombre').value.trim();
             const grupo = document.getElementById('nuevo-grupo').value.trim();
@@ -260,42 +262,32 @@
             const url = document.getElementById('nuevo-url').value.trim();
 
             if(!nombre || !url) {
-                alert("Por lo menos el nombre y la URL de streaming son requeridos.");
+                alert("Debes indicar un nombre y una URL de streaming.");
                 return;
             }
 
-            const nuevoItem = { name: nombre, title: nombre, group: grupo, category: grupo, logo: logo, poster: logo, url: url };
-            datosLocalesParseados.push(nuevoItem);
-            
+            datosLocalesParseados.push({ name: nombre, group: grupo || "General", logo: logo, url: url });
             renderizarTabla();
             
-            // Limpiar formulario interno
             document.getElementById('nuevo-nombre').value = "";
             document.getElementById('nuevo-url').value = "";
         }
 
-        // 3. ENVIAR CAMBIOS DEFINITIVOS A GITHUB (COMMIT AUTOMÁTICO)
+        // ACTUALIZAR DIRECTO EN GITHUB (COMMIT)
         async function guardarCambiosEnGitHub() {
             const rutaArchivo = document.getElementById('archivo-objetivo').value;
             if(!rutaArchivo || !tokenGitHub) {
-                alert("Necesitas ingresar un GitHub Token válido y seleccionar un archivo objetivo.");
+                alert("Asigna un Token de Acceso Válido y selecciona la lista que deseas guardar.");
                 return;
             }
 
-            actualizarStatus("Enviando commit...", "amber");
+            actualizarStatus("Sincronizando...", "amber");
 
-            let contenidoFinalString = "";
-            if(rutaArchivo.endsWith('.json')) {
-                contenidoFinalString = JSON.stringify(datosLocalesParseados, null, 2);
-            } else if(rutaArchivo.endsWith('.m3u')) {
-                contenidoFinalString = serializarM3U(datosLocalesParseados);
-            }
-
-            // Convertir de UTF-8 a Base64 de forma segura
+            const contenidoFinalString = serializarM3U(datosLocalesParseados);
             const contenidoBase64 = btoa(unescape(encodeURIComponent(contenidoFinalString)));
 
             const payload = {
-                message: `Actualización automática desde Panel de Admin: ${rutaArchivo}`,
+                message: `TV++ Admin Panel: Modificación en ${rutaArchivo}`,
                 content: contenidoBase64,
                 sha: currentFileSha
             };
@@ -310,18 +302,18 @@
                     body: JSON.stringify(payload)
                 });
 
-                if(!response.ok) throw new Error("Error en la subida a GitHub API.");
+                if(!response.ok) throw new Error("GitHub denegó la operación.");
 
                 const resJson = await response.json();
-                currentFileSha = resJson.content.sha; // Actualizar el nuevo SHA para el siguiente cambio
+                currentFileSha = resJson.content.sha; 
                 
-                alert(`¡Lista sincronizada con éxito en tu repositorio! GitHub Pages actualizará el reproductor en unos segundos.`);
-                actualizarStatus("Repositorio Sincronizado", "emerald");
+                alert("¡TV++ Actualizado! Los cambios se han guardado directamente en tu repositorio.");
+                actualizarStatus("Sincronizado", "emerald");
 
             } catch (error) {
                 console.error(error);
-                alert("Fallo al hacer commit. Revisa si tu token de GitHub expiró o no tiene permisos de escritura ('repo').");
-                actualizarStatus("Error en Commit", "red");
+                alert("No se pudo guardar el archivo. Verifica los permisos de escritura de tu token.");
+                actualizarStatus("Error Guardado", "red");
             }
         }
 
