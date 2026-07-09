@@ -1,4 +1,4 @@
-name: Ofuscador Maestro de Listas y Scripts TV++
+name: Ofuscador Maestro y Despliegue Externo TV++
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
   obfuscate:
     runs-on: ubuntu-latest
     steps:
-    - name: Clonar Repositorio
+    - name: Clonar Repositorio Privado
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -25,36 +25,35 @@ jobs:
     - name: Instalar Herramientas de Cifrado
       run: npm install -g javascript-obfuscator
 
-    - name: clonar estructura completa para conservar carpetas
+    - name: Clonar estructura de archivos
       run: |
-        echo "Duplicando árbol de directorios para no romper rutas..."
-        # Copiamos todo el repositorio a la carpeta de salida para mantener carpetas internas intactas
+        mkdir -p secure_build
         rsync -av --progress . secure_build --exclude .git --exclude .github --exclude secure_build
 
-    - name: Blindar Todas las Listas Multimedia (Raíz y Subcarpetas)
+    - name: Blindar Todas las Listas Multimedia
       run: |
-        echo "Cifrando flujos de video a Base64 de forma recursiva..."
-        # Buscamos absolutamente todos los m3u y json del repositorio, estén en la carpeta que estén
+        shopt -s nullglob
         find secure_build -type f \( -name "*.m3u" -o -name "*.M3U" -o -name "*.json" -o -name "*.JSON" \) | while read f; do
           base64 -w 0 "$f" > "${f}.enc"
-          rm "$f" # Borramos el original dentro de la rama pública para que solo quede el encriptado .enc
+          rm "$f"
         done
 
     - name: Ofuscar Todos los Paneles Web y Scripts
       run: |
-        echo "Aplicando ingeniería de defensa en scripts HTML..."
+        shopt -s nullglob
         find secure_build -type f \( -name "*.html" -o -name "*.htm" \) | while read f; do
           javascript-obfuscator "$f" --output "$f" \
             --compact true \
             --self-defending false \
             --string-array true \
             --string-array-encoding 'base64' \
-            --control-flow-flattening false || echo "Mitigación aplicada en $f"
+            --control-flow-flattening false || echo "Mitigación en $f"
         done
 
-    - name: Desplegar Rama Segura Protegida
+    - name: Desplegar en Repositorio Público Externo 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: secure_build
-        branch: secure-streams
-        token: ${{ secrets.GITHUB_TOKEN }}
+        repository-name: hackalka/player-publico # Lo mandamos a la fachada pública
+        branch: main
+        token: ${{ secrets.BOT_TOKEN_PUBLICO }} # Usará una llave que crearemos ahora
