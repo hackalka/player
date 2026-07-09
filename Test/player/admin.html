@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin</title>
+</head>
+<body>
+    <h1>Panel de Administración</h1>
+    <h2>Subir Listas o Enlaces</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="archivo" required>
+        <button type="submit">Subir Archivo</button>
+    </form>
+    <h2>Listas/Enlaces Actuales</h2>
+    <table border="1">
+        <tr><th>Nombre</th><th>Tipo</th><th>Acciones</th></tr>
+        <!-- Filas generadas dinámicamente desde el backend -->
+    </table>
+    <h2>Editar o Eliminar</h2>
+    <form action="/edit" method="post">
+        <input type="text" name="id" placeholder="ID de la lista/enlace">
+        <button type="submit">Editar/Eliminar</button>
+    </form>
+</body>
+</html>
