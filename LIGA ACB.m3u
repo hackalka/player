@@ -1,0 +1,29 @@
+#EXTM3U
+#EXTINF:-1 tvg-logo="https://www.unicajabaloncesto.com/Documentos/Fotos/4/7/6/9/476905_1011.jpg" group-title="LIGA ACB",ACB | Evento 01
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/811269
+#EXTINF:-1 tvg-logo="https://www.unicajabaloncesto.com/Documentos/Fotos/4/7/6/9/476905_1011.jpg" group-title="LIGA ACB",ACB | Evento 02
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/811268
+#EXTINF:-1 tvg-logo="https://www.unicajabaloncesto.com/Documentos/Fotos/4/7/6/9/476905_1011.jpg" group-title="LIGA ACB",ACB | Evento 03
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/811270
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LA LIGA HYPERMOTION TV (A)
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/535993
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LA LIGA HYPERMOTION TV (B)
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/535994
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LA LIGA HYPERMOTION TV (C)
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/535995
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION SD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279510
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION HD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279511
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION FHD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279512
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION M2 SD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279514
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION M2 HD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279513
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION M2 FHD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279515
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION M3 HD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279516
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/1865693878294052864/_dwTOXnJ_400x400.jpg" group-title="M+ LIGA HYPERMOTION",LIGA HYPERMOTION M3 FHD
+http://soporte-visual2.com:8080/blackiptv-nw/7BW9MQtvrmCa/279517
