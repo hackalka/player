@@ -20,40 +20,36 @@ jobs:
     - name: Configurar Entorno de Servidor (Node 24)
       uses: actions/setup-node@v4
       with:
-        node-version: '24' # Actualizado para evitar la advertencia de depreciación
+        node-version: '24'
 
     - name: Instalar Herramientas de Cifrado
       run: npm install -g javascript-obfuscator
 
-    - name: Preparar Entorno Seguro
-      run: mkdir -p secure_build
-
-    - name: Blindar Listas Multimedia (M3U y JSON)
+    - name: clonar estructura completa para conservar carpetas
       run: |
-        echo "Cifrando flujos de video a Base64..."
-        # Buscamos archivos ignorando mayúsculas/minúsculas y evitando bucles vacíos
-        shopt -s nullglob
-        for f in *.m3u *.M3U *.json *.JSON; do
-          if [ -f "$f" ]; then
-            base64 -w 0 "$f" > "secure_build/${f}.enc"
-          fi
+        echo "Duplicando árbol de directorios para no romper rutas..."
+        # Copiamos todo el repositorio a la carpeta de salida para mantener carpetas internas intactas
+        rsync -av --progress . secure_build --exclude .git --exclude .github --exclude secure_build
+
+    - name: Blindar Todas las Listas Multimedia (Raíz y Subcarpetas)
+      run: |
+        echo "Cifrando flujos de video a Base64 de forma recursiva..."
+        # Buscamos absolutamente todos los m3u y json del repositorio, estén en la carpeta que estén
+        find secure_build -type f \( -name "*.m3u" -o -name "*.M3U" -o -name "*.json" -o -name "*.JSON" \) | while read f; do
+          base64 -w 0 "$f" > "${f}.enc"
+          rm "$f" # Borramos el original dentro de la rama pública para que solo quede el encriptado .enc
         done
 
-    - name: Ofuscar Paneles Web y Scripts
+    - name: Ofuscar Todos los Paneles Web y Scripts
       run: |
-        echo "Aplicando ingeniería de defensa en scripts..."
-        shopt -s nullglob
-        for f in *.html *.htm; do
-          if [ -f "$f" ]; then
-            # Agregamos la bandera --disable-console-output false para evitar colisiones con scripts externos
-            # e ignoramos fallos críticos de parseo HTML manteniendo la estructura del Layout
-            javascript-obfuscator "$f" --output "secure_build/$f" \
-              --compact true \
-              --self-defending false \
-              --string-array true \
-              --string-array-encoding 'base64' \
-              --control-flow-flattening false || echo "Aviso: Archivo $f procesado con mitigación de firmas."
-          fi
+        echo "Aplicando ingeniería de defensa en scripts HTML..."
+        find secure_build -type f \( -name "*.html" -o -name "*.htm" \) | while read f; do
+          javascript-obfuscator "$f" --output "$f" \
+            --compact true \
+            --self-defending false \
+            --string-array true \
+            --string-array-encoding 'base64' \
+            --control-flow-flattening false || echo "Mitigación aplicada en $f"
         done
 
     - name: Desplegar Rama Segura Protegida
