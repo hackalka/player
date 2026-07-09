@@ -142,58 +142,52 @@
         }
 
         function guardarConfig() {
-            tokenGitHub = document.getElementById('gh-token').value.trim();
+            tokenGitHub = document.getElementById('gh-token').value.replace(/\s/g, ''); // Limpieza estricta de espacios
             localStorage.setItem("tvplusplus_root_token", tokenGitHub);
-            alert("Token inyectado con éxito.");
+            alert("Token inyectado y limpiado con éxito.");
             if(document.getElementById('archivo-objetivo').value) {
                 cargarListaDesdeGitHub();
             }
         }
 
-        // PETICIÓN TOTAL CON CABECERAS MODERNAS DE GITHUB
         async function cargarListaDesdeGitHub() {
             const rutaArchivo = document.getElementById('archivo-objetivo').value;
             if(!rutaArchivo) return;
 
-            actualizarStatus("Bypass Conexión...", "amber");
+            actualizarStatus("Conectando...", "amber");
             
             try {
-                // Cabeceras estrictas exigidas por la API v3 de GitHub para evitar bloqueos CORS/Auth
                 const headers = {
                     "Accept": "application/vnd.github+json",
                     "X-GitHub-Api-Version": "2022-11-28"
                 };
                 
                 if (tokenGitHub) {
-                    headers["Authorization"] = `Bearer ${tokenGitHub}`;
+                    headers["Authorization"] = `token ${tokenGitHub}`;
                 }
 
-                // Añadimos un timestamp aleatorio al final de la URL para saltarnos la caché agresiva del navegador
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${rutaArchivo}?t=${Date.now()}`, {
-                    headers: headers
-                });
+                // Uso de encodeURI para procesar correctamente las rutas con espacios como 'Coleccion Pixar.m3u'
+                const urlSegura = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodeURI(rutaArchivo)}?t=${Date.now()}`;
+                
+                const response = await fetch(urlSegura, { headers: headers });
 
-                if(response.status === 401 || response.status === 403) {
-                    throw new Error("Tu Token de GitHub no tiene permisos suficientes o es inválido.");
+                if (!response.ok) {
+                    throw new Error(`Código ${response.status} (${response.statusText || 'Error de permisos o ruta inexistente'})`);
                 }
-                if(!response.ok) throw new Error(`Error ${response.status}: No se encuentra el archivo.`);
                 
                 const jsonRes = await response.json();
                 currentFileSha = jsonRes.sha;
                 
-                // Decodificación binaria pura para evitar conflictos UTF-8
                 const contenidoRaw = decodeBase64Utf8(jsonRes.content);
-
-                // Parser M3U tolerante
                 datosLocalesParseados = parsearM3U(contenidoRaw);
 
                 renderizarTabla();
-                actualizarStatus("Acceso Total Concedido", "emerald");
+                actualizarStatus("Acceso Total", "emerald");
 
             } catch (error) {
                 console.error(error);
-                alert(`${error.message}\n\nRECOMENDACIÓN:\nAsegúrate de que tu Token tenga activada la casilla 'repo' (si es clásico) o 'Contents: Read and Write' (si es fine-grained).`);
-                actualizarStatus("Acceso Denegado", "red");
+                alert(`[ERROR GITHUB] No se pudo leer el archivo.\nDetalle técnico: ${error.message}\n\nSi el error es 404, revisa que el nombre del archivo en el menú lateral sea idéntico en mayúsculas/minúsculas al de tu GitHub.`);
+                actualizarStatus("Error", "red");
             }
         }
 
@@ -305,7 +299,7 @@
                 return;
             }
 
-            actualizarStatus("Forzando escritura...", "amber");
+            actualizarStatus("Guardando...", "amber");
 
             const contenidoFinalString = serializarM3U(datosLocalesParseados);
             
@@ -318,24 +312,24 @@
             const contenidoBase64 = btoa(binaria);
 
             const payload = {
-                message: `TV++ Core Commit: Escritura atómica forzada en ${rutaArchivo}`,
+                message: `TV++ Core Commit: Escritura forzada en ${rutaArchivo}`,
                 content: contenidoBase64,
                 sha: currentFileSha
             };
 
             try {
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${rutaArchivo}`, {
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodeURI(rutaArchivo)}`, {
                     method: "PUT",
                     headers: {
                         "Accept": "application/vnd.github+json",
                         "X-GitHub-Api-Version": "2022-11-28",
-                        "Authorization": `Bearer ${tokenGitHub}`,
+                        "Authorization": `token ${tokenGitHub}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(payload)
                 });
 
-                if(!response.ok) throw new Error(`Escritura rechazada por GitHub (Estado: ${response.status})`);
+                if(!response.ok) throw new Error(`Error ${response.status} al guardar.`);
 
                 const resJson = await response.json();
                 currentFileSha = resJson.content.sha; 
@@ -345,8 +339,8 @@
 
             } catch (error) {
                 console.error(error);
-                alert(`Error al escribir: ${error.message}\n\nRevisa los permisos de escritura de tu clave.`);
-                actualizarStatus("Fallo de Escritura", "red");
+                alert(`Error al escribir: ${error.message}`);
+                actualizarStatus("Error", "red");
             }
         }
 
