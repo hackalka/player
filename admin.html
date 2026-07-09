@@ -19,7 +19,7 @@
     <nav class="bg-[#141414] border-b border-[#2a2a2a] px-6 py-4 flex items-center justify-between shadow-xl">
         <div class="flex items-center space-x-3">
             <div class="text-2xl font-black italic tracking-tighter text-[#E50914] drop-shadow-[0_0_15px_rgba(229,9,20,0.4)]">
-                TV<span class="text-white">++</span><span class="text-xs block not-italic font-bold tracking-widest text-[#888] uppercase mt-[-4px]">AUTO-SCAN ROOT</span>
+                TV<span class="text-white">++</span><span class="text-xs block not-italic font-bold tracking-widest text-[#888] uppercase mt-[-4px]">UNIVERSAL HYBRID ROOT</span>
             </div>
         </div>
         
@@ -29,7 +29,7 @@
                 <i class="fa-solid fa-unlock-keyhole absolute right-2.5 top-2.5 text-xs text-slate-500"></i>
             </div>
             <button onclick="guardarConfig()" class="bg-[#E50914] hover:bg-[#b8070f] text-xs font-bold px-4 py-1.5 rounded-lg transition text-white shadow-md shadow-[#E50914]/20">
-                Conectar y Escanear
+                Escanear Todo
             </button>
         </div>
     </nav>
@@ -39,11 +39,11 @@
         <div class="lg:col-span-1 flex flex-col space-y-4 h-full overflow-y-auto pr-2">
             
             <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5 shadow-xl">
-                <label class="block text-xs font-bold text-[#888] uppercase tracking-wider mb-2">1. Archivos Encontrados</label>
+                <label class="block text-xs font-bold text-[#888] uppercase tracking-wider mb-2">1. Listas Detectadas (M3U / JSON)</label>
                 <select id="archivo-objetivo" onchange="cargarListaDesdeGitHub()" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-2.5 text-xs font-semibold text-[#e8e8e8] focus:border-[#E50914] focus:outline-none">
                     <option value="" disabled selected>-- Conecta tu Token para escanear --</option>
                 </select>
-                <p class="text-[10px] text-slate-500 mt-2"><i class="fa-solid fa-info-circle"></i> Los archivos se detectan en tiempo real desde tu GitHub.</p>
+                <p class="text-[10px] text-slate-500 mt-2"><i class="fa-solid fa-circle-nodes text-emerald-500"></i> Soporta formatos unificados M3U y estructuras JSON.</p>
             </div>
 
             <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5 shadow-xl space-y-3">
@@ -51,19 +51,19 @@
                 
                 <div>
                     <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Nombre / Título</label>
-                    <input type="text" id="nuevo-nombre" placeholder="Ej: Toy Story" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <input type="text" id="nuevo-nombre" placeholder="Ej: Canal Premium o Película" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Categoría / Grupo</label>
-                    <input type="text" id="nuevo-grupo" placeholder="Ej: Pixar" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <input type="text" id="nuevo-grupo" placeholder="Ej: Acestream / Cine" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Logo / Poster</label>
-                    <input type="text" id="nuevo-logo" placeholder="logos/imagen.jpg" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Logo / Poster / Imagen</label>
+                    <input type="text" id="nuevo-logo" placeholder="logos/imagen.jpg o URL" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Enlace Streaming</label>
-                    <input type="text" id="nuevo-url" placeholder="http://... o acestream://..." class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
+                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Enlace Streaming / ID Acestream</label>
+                    <input type="text" id="nuevo-url" placeholder="acestream://... o http://..." class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
 
                 <button onclick="agregarElementoALista()" class="w-full bg-[#222] hover:bg-[#E50914] border border-[#333] hover:border-[#E50914] text-white text-xs font-bold py-2 rounded-md transition flex items-center justify-center gap-1">
@@ -80,9 +80,9 @@
             <div class="p-4 border-b border-[#2a2a2a] bg-[#1a1a1a] flex justify-between items-center">
                 <div>
                     <h2 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
-                        <i class="fa-solid fa-terminal text-[#E50914]"></i> Consola Operacional - TV++
+                        <i class="fa-solid fa-terminal text-[#E50914]"></i> Consola Híbrida de Datos - TV++
                     </h2>
-                    <p class="text-[11px] text-[#888]">Los datos se guardan respetando la estructura original del archivo seleccionado.</p>
+                    <p class="text-[11px] text-[#888]">El sistema compilará automáticamente en M3U o JSON según corresponda al archivo.</p>
                 </div>
                 <div id="status-badge" class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-[#0a0a0a] text-[#888] border border-[#2a2a2a]">
                     Desconectado
@@ -96,13 +96,13 @@
                             <th class="py-3 px-4 font-semibold w-1/4">Nombre / Título</th>
                             <th class="py-3 px-4 font-semibold w-1/5">Categoría / Grupo</th>
                             <th class="py-3 px-4 font-semibold w-1/5">Imagen / Poster / Logo</th>
-                            <th class="py-3 px-4 font-semibold">Enlace de Streaming</th>
+                            <th class="py-3 px-4 font-semibold">Enlace de Streaming (HTTP / Acestream)</th>
                             <th class="py-3 px-4 text-center w-12">Eliminar</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-elementos" class="divide-y divide-[#2a2a2a]/60">
                         <tr>
-                            <td colspan="5" class="text-center py-12 text-[#888] italic">Por favor, introduce tu token arriba y selecciona un archivo detectado.</td>
+                            <td colspan="5" class="text-center py-12 text-[#888] italic">Sincroniza tu cuenta mediante el token para cargar el árbol completo de archivos del repositorio.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -120,7 +120,6 @@
 
         if(tokenGitHub) {
             document.getElementById('gh-token').value = tokenGitHub;
-            // Escaneo automático si ya hay token guardado
             window.addEventListener('DOMContentLoaded', escanearRepositorio);
         }
 
@@ -130,10 +129,10 @@
             escanearRepositorio();
         }
 
-        // FUNCIÓN MAESTRA: ESCANEA TU REPOSITORIO Y BUSCA TODOS LOS M3U EXISTENTES
+        // ESCÁNER TOTAL DE ARCHIVOS M3U Y JSON
         async function escanearRepositorio() {
             if(!tokenGitHub) return;
-            actualizarStatus("Escaneando Repositorio...", "amber");
+            actualizarStatus("Mapeando Repositorio...", "amber");
             
             try {
                 const headers = {
@@ -142,42 +141,46 @@
                     "Authorization": `token ${tokenGitHub}`
                 };
 
-                // Escanea recursivamente el árbol de archivos de tu repositorio 'player'
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/main?recursive=1&t=${Date.now()}`, { headers: headers });
                 
-                if(!response.ok) throw new Error("No se pudo mapear el repositorio. Revisa tu token.");
+                if(!response.ok) throw new Error("Acceso denegado. Verifica la vigencia o alcances del Token.");
                 
                 const data = await response.json();
                 
-                // Filtramos únicamente los archivos que terminen en .m3u
-                const archivosM3u = data.tree.filter(item => item.type === "blob" && item.path.toLowerCase().endsWith(".m3u"));
+                // FILTRADO INTELIGENTE: Captura .m3u Y .json sin distinción de mayúsculas
+                const archivosValidos = data.tree.filter(item => {
+                    if (item.type !== "blob") return false;
+                    const ext = item.path.toLowerCase();
+                    return ext.endsWith(".m3u") || ext.endsWith(".json");
+                });
                 
                 const selector = document.getElementById('archivo-objetivo');
                 selector.innerHTML = '<option value="" disabled selected>-- Elige un archivo detectado --</option>';
                 
-                archivosM3u.forEach(file => {
+                archivosValidos.forEach(file => {
                     const opt = document.createElement('option');
                     opt.value = file.path;
-                    opt.innerText = `📂 ${file.path}`;
+                    const icono = file.path.toLowerCase().endsWith('.json') ? '📦 [JSON]' : '📺 [M3U]';
+                    opt.innerText = `${icono} ${file.path}`;
                     selector.appendChild(opt);
                 });
 
                 actualizarStatus("Escaneo Completo", "emerald");
-                alert(`¡Éxito! Se han detectado de forma automática ${archivosM3u.length} archivos .m3u en tu repositorio.`);
+                alert(`¡Mapeo Exitoso!\nSe detectaron de manera automática ${archivosValidos.length} archivos multimedia configurables.`);
 
             } catch (error) {
                 console.error(error);
-                alert("Error al escanear los archivos de GitHub: " + error.message);
-                actualizarStatus("Error Escaneo", "red");
+                alert("Error al mapear archivos desde GitHub: " + error.message);
+                actualizarStatus("Error Mapeo", "red");
             }
         }
 
-        // CARGA EL ARCHIVO SELECCIONADO SIN MIEDO A ERRORES DE RUTA
+        // CARGAR CUALQUIER ARCHIVO USANDO PARSER AUTOMÁTICO REVERSIVO
         async function cargarListaDesdeGitHub() {
             const rutaArchivo = document.getElementById('archivo-objetivo').value;
             if(!rutaArchivo) return;
 
-            actualizarStatus("Leyendo Datos...", "amber");
+            actualizarStatus("Leyendo Fichero...", "amber");
             
             try {
                 const headers = {
@@ -189,21 +192,27 @@
                 const urlSegura = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodeURIComponent(rutaArchivo)}?t=${Date.now()}`;
                 const response = await fetch(urlSegura, { headers: headers });
 
-                if (!response.ok) throw new Error(`Código ${response.status}`);
+                if (!response.ok) throw new Error(`Código de estado ${response.status}`);
                 
                 const jsonRes = await response.json();
                 currentFileSha = jsonRes.sha;
                 
                 const contenidoRaw = decodeBase64Utf8(jsonRes.content);
-                datosLocalesParseados = parsearM3U(contenidoRaw);
+                
+                // Selector Dinámico de Procesamiento según extensión
+                if (rutaArchivo.toLowerCase().endsWith('.json')) {
+                    datosLocalesParseados = parsearJSON(contenidoRaw);
+                } else {
+                    datosLocalesParseados = parsearM3U(contenidoRaw);
+                }
 
                 renderizarTabla();
-                actualizarStatus("Editor Activo", "emerald");
+                actualizarStatus("Editor Híbrido Activo", "emerald");
 
             } catch (error) {
                 console.error(error);
-                alert(`Error al abrir este archivo específico: ${error.message}`);
-                actualizarStatus("Error de carga", "red");
+                alert(`Error al abrir el archivo seleccionado: ${error.message}`);
+                actualizarStatus("Error de apertura", "red");
             }
         }
 
@@ -217,6 +226,7 @@
             return new TextDecoder("utf-8").decode(bytes);
         }
 
+        // PARSER M3U STANDARD
         function parsearM3U(rawText) {
             const lines = rawText.split(/\r?\n/);
             const lista = [];
@@ -245,6 +255,39 @@
             return lista;
         }
 
+        // PARSER JSON INTEGRADO (Soporta múltiples estructuras comunes de IPTV de objetos)
+        function parsearJSON(rawText) {
+            try {
+                const data = JSON.parse(rawText);
+                
+                // Si viene mapeado directamente como un Array []
+                if (Array.isArray(data)) {
+                    return data.map(item => ({
+                        name: item.name || item.title || "Sin título",
+                        group: item.group || item.category || "General",
+                        logo: item.logo || item.poster || item.image || "",
+                        url: item.url || item.link || item.file || ""
+                    }));
+                }
+                
+                // Si viene encapsulado en propiedades comunes como 'channels', 'items' o 'lista'
+                const nodosClave = data.channels || data.items || data.lista || data.movies || data.elements;
+                if (nodosClave && Array.isArray(nodosClave)) {
+                    return nodosClave.map(item => ({
+                        name: item.name || item.title || "Sin título",
+                        group: item.group || item.category || "General",
+                        logo: item.logo || item.poster || item.image || "",
+                        url: item.url || item.link || item.file || ""
+                    }));
+                }
+                
+                return [];
+            } catch (e) {
+                console.error("Estructura JSON no estandarizada:", e);
+                return [];
+            }
+        }
+
         function serializarM3U(objetos) {
             let m3uString = "#EXTM3U\n";
             objetos.forEach(item => {
@@ -253,12 +296,17 @@
             return m3uString;
         }
 
+        function serializarJSON(objetos) {
+            // Devuelve una estructura limpia estandarizada en formato JSON sangrado
+            return JSON.stringify(objetos, null, 4);
+        }
+
         function renderizarTabla() {
             const tbody = document.getElementById('tabla-elementos');
             tbody.innerHTML = "";
 
             if(datosLocalesParseados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">Lista vacía.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">El archivo no contiene registros válidos o su formato es incompatible.</td></tr>`;
                 return;
             }
 
@@ -294,7 +342,7 @@
             const url = document.getElementById('nuevo-url').value.trim();
 
             if(!nombre || !url) {
-                alert("Asigna obligatoriamente un nombre y una URL.");
+                alert("Asigna obligatoriamente un nombre y una dirección URL válida.");
                 return;
             }
 
@@ -305,15 +353,23 @@
             document.getElementById('nuevo-url').value = "";
         }
 
+        // COMPILACIÓN Y GUARDADO DE DATOS MULTIFORMATO
         async function guardarCambiosEnGitHub() {
             const rutaArchivo = document.getElementById('archivo-objetivo').value;
             if(!rutaArchivo || !tokenGitHub) {
-                alert("Elige el archivo de la lista antes de guardar.");
+                alert("Por favor, selecciona primero un archivo multimedia de la lista.");
                 return;
             }
 
             actualizarStatus("Sincronizando...", "amber");
-            const contenidoFinalString = serializarM3U(datosLocalesParseados);
+            
+            // Determinamos dinámicamente cómo estructurar el string de datos final
+            let contenidoFinalString = "";
+            if (rutaArchivo.toLowerCase().endsWith('.json')) {
+                contenidoFinalString = serializarJSON(datosLocalesParseados);
+            } else {
+                contenidoFinalString = serializarM3U(datosLocalesParseados);
+            }
             
             const encoder = new TextEncoder();
             const dataData = encoder.encode(contenidoFinalString);
@@ -324,7 +380,7 @@
             const contenidoBase64 = btoa(binaria);
 
             const payload = {
-                message: `TV++ Auto Update: ${rutaArchivo}`,
+                message: `TV++ Core Sync: Actualización atómica en ${rutaArchivo}`,
                 content: contenidoBase64,
                 sha: currentFileSha
             };
@@ -341,18 +397,18 @@
                     body: JSON.stringify(payload)
                 });
 
-                if(!response.ok) throw new Error(`Código ${response.status}`);
+                if(!response.ok) throw new Error(`Estado API ${response.status}`);
 
                 const resJson = await response.json();
                 currentFileSha = resJson.content.sha; 
                 
-                alert("¡TV++ Sincronizado de forma global con éxito!");
-                actualizarStatus("Guardado", "emerald");
+                alert("¡TV++ Actualizado globalmente! Cambios inyectados con éxito.");
+                actualizarStatus("Guardado Completo", "emerald");
 
             } catch (error) {
                 console.error(error);
-                alert(`Error al guardar en GitHub: ${error.message}`);
-                actualizarStatus("Error Guardado", "red");
+                alert(`Error al guardar datos multimedia: ${error.message}`);
+                actualizarStatus("Error Sincro", "red");
             }
         }
 
