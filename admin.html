@@ -46,19 +46,19 @@
                 <button onclick="document.getElementById('input-archivo-local').click()" class="w-full bg-[#1a1a1a] hover:bg-[#222] border border-[#333] hover:border-emerald-500 text-slate-300 text-xs font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-cloud-arrow-up text-emerald-400"></i> Seleccionar M3U / JSON
                 </button>
-                <div id="info-subida-local" class="text-[10px] text-slate-500 mt-2 italic text-center">Sube un archivo para auto-clasificar por categorías.</div>
+                <div id="info-subida-local" class="text-[10px] text-slate-400 mt-2 italic text-center font-bold">Ningún archivo cargado en memoria.</div>
             </div>
 
             <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5 shadow-xl">
                 <label class="block text-xs font-bold text-[#888] uppercase tracking-wider mb-2">2. Archivos en Repositorio</label>
-                <div class="flex gap-2">
-                    <select id="archivo-objetivo" onchange="cargarListaDesdeGitHub()" class="flex-1 bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-2.5 text-xs font-semibold text-[#e8e8e8] focus:border-[#E50914] focus:outline-none">
+                <div class="flex gap-2 mb-3">
+                    <select id="archivo-objetivo" onchange="cargarListaDesdeGitHub()" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-2.5 text-xs font-semibold text-[#e8e8e8] focus:border-[#E50914] focus:outline-none">
                         <option value="" disabled selected>-- Conecta tu Token --</option>
                     </select>
                 </div>
-                <div class="mt-2">
-                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Guardar Como (Ruta de destino)</label>
-                    <input type="text" id="ruta-destino-manual" placeholder="Ej: listas/nueva_lista.m3u" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none text-slate-300 font-mono">
+                <div>
+                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Ruta de Guardado en GitHub</label>
+                    <input type="text" id="ruta-destino-manual" placeholder="Ej: listas/tv.m3u" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none text-slate-300 font-mono">
                 </div>
             </div>
 
@@ -78,7 +78,7 @@
                     <input type="text" id="nuevo-logo" placeholder="URL o ruta interna" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Enlace Stream (HTTP / Acestream)</label>
+                    <label class="block text-[10px] uppercase text-slate-400 font-bold mb-1">Enlace Stream / Acestream ID</label>
                     <input type="text" id="nuevo-url" placeholder="acestream://... o http://" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-md p-2 text-xs focus:border-[#E50914] focus:outline-none">
                 </div>
 
@@ -93,15 +93,31 @@
         </div>
 
         <div class="lg:col-span-3 bg-[#141414] border border-[#2a2a2a] rounded-xl flex flex-col h-full overflow-hidden shadow-2xl">
-            <div class="p-4 border-b border-[#2a2a2a] bg-[#1a1a1a] flex justify-between items-center">
+            
+            <div class="p-4 border-b border-[#2a2a2a] bg-[#1a1a1a] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
                         <i class="fa-solid fa-terminal text-[#E50914]"></i> Consola Operacional de Estructuras - TV++
                     </h2>
-                    <p class="text-[11px] text-[#888]">Módulo inteligente: Organiza dinámicamente los grupos detectados en tu lista.</p>
+                    <p class="text-[11px] text-[#888]">Los canales se listan aquí abajo en tiempo real tras importar un archivo o seleccionarlo.</p>
                 </div>
                 <div id="status-badge" class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-[#0a0a0a] text-[#888] border border-[#2a2a2a]">
                     Desconectado
+                </div>
+            </div>
+
+            <div class="p-3 bg-[#111] border-b border-[#2a2a2a] flex flex-wrap gap-4 items-center justify-between text-xs">
+                <div class="flex items-center gap-2 bg-[#0a0a0a] p-1.5 rounded-lg border border-[#2a2a2a]">
+                    <span class="text-[#888] font-semibold"><i class="fa-solid fa-tags text-[#E50914]"></i> Cambiar Grupo a TODO lo importado:</span>
+                    <input type="text" id="categoria-masiva-input" placeholder="Ej: Universo Marvel" class="bg-[#141414] border border-[#2a2a2a] rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-[#E50914] w-40">
+                    <button onclick="aplicarCategoriaMasiva()" class="bg-[#2a2a2a] hover:bg-[#E50914] text-white px-2.5 py-1 rounded font-bold transition">Aplicar</button>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <span class="text-[#888]"><i class="fa-solid fa-filter"></i> Filtrar Vista:</span>
+                    <select id="filtro-grupo" onchange="renderizarTabla()" class="bg-[#0a0a0a] border border-[#2a2a2a] rounded p-1 text-xs text-slate-300">
+                        <option value="TODOS">-- Ver Todas las Categorías --</option>
+                    </select>
                 </div>
             </div>
 
@@ -110,7 +126,7 @@
                     <thead>
                         <tr class="bg-[#0a0a0a] text-[#888] uppercase tracking-wider border-b border-[#2a2a2a] sticky top-0 z-10">
                             <th class="py-3 px-4 font-semibold w-1/4">Nombre / Título</th>
-                            <th class="py-3 px-4 font-semibold w-1/5">Categoría / Grupo Correspondiendo</th>
+                            <th class="py-3 px-4 font-semibold w-1/5">Categoría / Grupo Destino</th>
                             <th class="py-3 px-4 font-semibold w-1/5">Imagen / Poster / Logo</th>
                             <th class="py-3 px-4 font-semibold">Enlace de Streaming (HTTP / Acestream)</th>
                             <th class="py-3 px-4 text-center w-12">Eliminar</th>
@@ -118,7 +134,7 @@
                     </thead>
                     <tbody id="tabla-elementos" class="divide-y divide-[#2a2a2a]/60">
                         <tr>
-                            <td colspan="5" class="text-center py-12 text-[#888] italic">Importa un archivo local o selecciona una lista remota desde tu repositorio.</td>
+                            <td colspan="5" class="text-center py-12 text-[#888] italic">Importa un archivo local desde la izquierda para inyectar canales estructurados en las categorías.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -145,20 +161,20 @@
             escanearRepositorio();
         }
 
-        // MOTOR DE IMPORTACIÓN LOCAL DE ARCHIVOS EXTERNOS
+        // CONTROLADOR DE SUBIDA LOCAL
         function importarArchivoLocal(input) {
             const file = input.files[0];
             if (!file) return;
 
-            document.getElementById('info-subida-local').innerText = `Procesando: ${file.name}`;
-            document.getElementById('ruta-destino-manual').value = file.name; // Rellena por defecto el nombre de guardado
+            document.getElementById('info-subida-local').innerText = `Cargado: ${file.name}`;
+            document.getElementById('ruta-destino-manual').value = file.name; 
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const rawText = e.target.result;
                 const extension = file.name.split('.').pop().toLowerCase();
 
-                actualizarStatus("Clasificando...", "amber");
+                actualizarStatus("Estructurando...", "amber");
 
                 if (extension === 'json') {
                     datosLocalesParseados = parsearJSON(rawText);
@@ -166,32 +182,69 @@
                     datosLocalesParseados = parsearM3U(rawText);
                 }
 
-                // Intentar buscar si este archivo ya existe en el repositorio para heredar su SHA por si quiere sobreescribir
                 buscarShaExistente(file.name);
-
+                actualizarFiltrosGrupo();
                 renderizarTabla();
-                actualizarStatus("Lista Local Cargada", "emerald");
-                alert(`¡Clasificación Automática Completada!\nSe han cargado y ordenado por categorías ${datosLocalesParseados.length} canales con éxito en la tabla.`);
+                
+                actualizarStatus("Listo en Tabla", "emerald");
+                alert(`¡Importación Completa!\nSe han detectado y clasificado ${datosLocalesParseados.length} canales en la tabla de la derecha.\n\nPuedes editarlos individualmente o usar el asignador de grupos masivo.`);
             };
             reader.readAsText(file, "UTF-8");
         }
 
+        function aplicarCategoriaMasiva() {
+            const nuevaCat = document.getElementById('categoria-masiva-input').value.trim();
+            if(!nuevaCat) {
+                alert("Escribe el nombre de la categoría o grupo que deseas asignar.");
+                return;
+            }
+            if(datosLocalesParseados.length === 0) {
+                alert("No hay canales en la tabla para modificar.");
+                return;
+            }
+
+            datosLocalesParseados.forEach(item => {
+                item.group = nuevaCat;
+            });
+
+            actualizarFiltrosGrupo();
+            renderizarTabla();
+            alert(`Se han cambiado todos los canales a la categoría: "${nuevaCat}"`);
+        }
+
+        function actualizarFiltrosGrupo() {
+            const selectorFiltro = document.getElementById('filtro-grupo');
+            const gruposUnicos = new Set();
+            
+            datosLocalesParseados.forEach(item => {
+                if(item.group) gruposUnicos.add(item.group);
+            });
+
+            selectorFiltro.innerHTML = '<option value="TODOS">-- Ver Todas las Categorías --</option>';
+            gruposUnicos.forEach(grupo => {
+                const opt = document.createElement('option');
+                opt.value = grupo;
+                opt.innerText = grupo;
+                selectorFiltro.appendChild(opt);
+            });
+        }
+
         function buscarShaExistente(nombreArchivo) {
-            currentFileSha = ""; // Reset por defecto
+            currentFileSha = ""; 
             const selector = document.getElementById('archivo-objetivo');
             for(let i=0; i<selector.options.length; i++){
                 if(selector.options[i].value.toLowerCase() === nombreArchivo.toLowerCase()){
                     selector.selectedIndex = i;
-                    cargarListaDesdeGitHub(); // Sincroniza el SHA del repositorio real
+                    cargarListaDesdeGitHub(); 
                     break;
                 }
             }
         }
 
-        // ESCÁNER TOTAL DE COMPONENTES DEL REPOSITORIO GITHUB
+        // REPOSITORIO MAPPER
         async function escanearRepositorio() {
             if(!tokenGitHub) return;
-            actualizarStatus("Mapeando Repositorio...", "amber");
+            actualizarStatus("Mapeando...", "amber");
             
             try {
                 const headers = {
@@ -201,7 +254,7 @@
                 };
 
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/main?recursive=1&t=${Date.now()}`, { headers: headers });
-                if(!response.ok) throw new Error("Acceso denegado. Verifica el Token.");
+                if(!response.ok) throw new Error("Acceso denegado.");
                 
                 const data = await response.json();
                 const archivosValidos = data.tree.filter(item => {
@@ -221,7 +274,7 @@
                     selector.appendChild(opt);
                 });
 
-                actualizarStatus("Escaneo Completo", "emerald");
+                actualizarStatus("Conectado", "emerald");
 
             } catch (error) {
                 console.error(error);
@@ -229,13 +282,12 @@
             }
         }
 
-        // CARGA REMOTA DESDE LISTA DE SELECCIÓN
         async function cargarListaDesdeGitHub() {
             const rutaArchivo = document.getElementById('archivo-objetivo').value;
             if(!rutaArchivo) return;
 
             document.getElementById('ruta-destino-manual').value = rutaArchivo;
-            actualizarStatus("Leyendo Fichero...", "amber");
+            actualizarStatus("Leyendo...", "amber");
             
             try {
                 const headers = {
@@ -260,6 +312,7 @@
                     datosLocalesParseados = parsearM3U(contenidoRaw);
                 }
 
+                actualizarFiltrosGrupo();
                 renderizarTabla();
                 actualizarStatus("Editor Listo", "emerald");
 
@@ -279,7 +332,7 @@
             return new TextDecoder("utf-8").decode(bytes);
         }
 
-        // PARSER M3U AUTOMÁTICO
+        // PARSER M3U
         function parsearM3U(rawText) {
             const lines = rawText.split(/\r?\n/);
             const lista = [];
@@ -308,7 +361,7 @@
             return lista;
         }
 
-        // PARSER JSON AUTOMÁTICO
+        // PARSER JSON
         function parsearJSON(rawText) {
             try {
                 const data = JSON.parse(rawText);
@@ -347,25 +400,36 @@
             return JSON.stringify(objetos, null, 4);
         }
 
+        // RENDEREADO CON FILTRADO ACTIVO
         function renderizarTabla() {
             const tbody = document.getElementById('tabla-elementos');
             tbody.innerHTML = "";
 
-            if(datosLocalesParseados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">Sin registros para mostrar.</td></tr>`;
+            const filtro = document.getElementById('filtro-grupo').value;
+
+            const datosFiltrados = datosLocalesParseados.filter(item => {
+                if (filtro === "TODOS") return true;
+                return item.group === filtro;
+            });
+
+            if(datosFiltrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">No hay canales en este grupo o la lista está vacía.</td></tr>`;
                 return;
             }
 
-            datosLocalesParseados.forEach((elem, index) => {
+            datosFiltrados.forEach((elem, index) => {
+                // Encontrar el índice real en el array maestro
+                const realIndex = datosLocalesParseados.indexOf(elem);
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-[#1c1c1c]/40 transition text-xs border-b border-[#2a2a2a]/40";
                 tr.innerHTML = `
-                    <td class="py-2 px-3"><input type="text" value="${elem.name}" onchange="actualizarCelda(${index}, 'name', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-200 font-semibold"></td>
-                    <td class="py-2 px-3"><input type="text" value="${elem.group}" onchange="actualizarCelda(${index}, 'group', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-300 font-bold text-slate-400"></td>
-                    <td class="py-2 px-3"><input type="text" value="${elem.logo}" onchange="actualizarCelda(${index}, 'logo', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-400 font-mono text-[10px]"></td>
-                    <td class="py-2 px-3"><input type="text" value="${elem.url}" onchange="actualizarCelda(${index}, 'url', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-emerald-400 font-mono text-[11px]"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.name}" onchange="actualizarCelda(${realIndex}, 'name', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-200 font-semibold"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.group}" onchange="actualizarCelda(${realIndex}, 'group', this.value); actualizarFiltrosGrupo();" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-amber-400 font-bold"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.logo}" onchange="actualizarCelda(${realIndex}, 'logo', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-slate-400 font-mono text-[10px]"></td>
+                    <td class="py-2 px-3"><input type="text" value="${elem.url}" onchange="actualizarCelda(${realIndex}, 'url', this.value)" class="w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-emerald-400 font-mono text-[11px]"></td>
                     <td class="py-2 px-3 text-center">
-                        <button onclick="eliminarFila(${index})" class="text-red-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="eliminarFila(${realIndex})" class="text-red-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -378,6 +442,7 @@
 
         function eliminarFila(index) {
             datosLocalesParseados.splice(index, 1);
+            actualizarFiltrosGrupo();
             renderizarTabla();
         }
 
@@ -393,21 +458,22 @@
             }
 
             datosLocalesParseados.push({ name: nombre, group: grupo || "General", logo: logo, url: url });
+            actualizarFiltrosGrupo();
             renderizarTabla();
             
             document.getElementById('nuevo-nombre').value = "";
             document.getElementById('nuevo-url').value = "";
         }
 
-        // COMPILACIÓN REMOTA EN REPOSITORIO (FORZADO ATÓMICO)
+        // GUARDADO TOTAL DESPLIEGUE ATÓMICO
         async function guardarCambiosEnGitHub() {
             const rutaDestino = document.getElementById('ruta-destino-manual').value.trim();
             if(!rutaDestino || !tokenGitHub) {
-                alert("Define una ruta de destino para guardar el archivo y asegúrate de inyectar tu token.");
+                alert("Define la ruta de destino y asegúrate de inyectar tu token válido.");
                 return;
             }
 
-            actualizarStatus("Inyectando Cambios...", "amber");
+            actualizarStatus("Subiendo...", "amber");
             
             let contenidoFinalString = "";
             if (rutaDestino.toLowerCase().endsWith('.json')) {
@@ -425,11 +491,10 @@
             const contenidoBase64 = btoa(binaria);
 
             const payload = {
-                message: `TV++ Flash Inject: Actualizando lista de canales unificada en ${rutaDestino}`,
+                message: `TV++ Core Sync: Inyección en ${rutaDestino}`,
                 content: contenidoBase64
             };
 
-            // Si se detectó que el archivo ya existía y tenemos el SHA, lo incluimos para actualizar, sino crea un archivo nuevo de cero
             if (currentFileSha) {
                 payload.sha = currentFileSha;
             }
@@ -446,19 +511,19 @@
                     body: JSON.stringify(payload)
                 });
 
-                if(!response.ok) throw new Error(`Estado API ${response.status}`);
+                if(!response.ok) throw new Error(`Status ${response.status}`);
 
                 const resJson = await response.json();
                 currentFileSha = resJson.content.sha; 
                 
-                alert(`¡Archivo '${rutaDestino}' sincronizado con éxito total en GitHub!`);
-                actualizarStatus("Sincronizado", "emerald");
-                escanearRepositorio(); // Refresca las listas disponibles en el selector
+                alert(`¡Sincronización total completada!\nEl archivo '${rutaDestino}' se ha subido correctamente ordenado por categorías.`);
+                actualizarStatus("Guardado", "emerald");
+                escanearRepositorio(); 
 
             } catch (error) {
                 console.error(error);
-                alert(`Fallo en el despliegue hacia GitHub: ${error.message}`);
-                actualizarStatus("Fallo", "red");
+                alert(`Error al inyectar cambios: ${error.message}`);
+                actualizarStatus("Error", "red");
             }
         }
 
