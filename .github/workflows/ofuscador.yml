@@ -1,0 +1,54 @@
+name: Ofuscador Maestro de Listas y Scripts TV++
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  obfuscate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clonar Repositorio
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Instalar NodeJS y Ofuscador Profesional
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Instalar Herramientas de Cifrado
+      run: npm install -g javascript-obfuscator
+
+    - name: Preparar Entorno Seguro
+      run: mkdir -p secure_build
+
+    - name: Blindar Listas Multimedia (M3U y JSON)
+      run: |
+        echo "Encriptando flujos de video..."
+        for f in *.m3u *.json; do
+          if [ -f "$f" ]; then
+            base64 -w 0 "$f" > "secure_build/${f}.enc"
+          fi
+        done
+
+    - name: Ofuscar Paneles Web y Scripts (HTML)
+      run: |
+        echo "Aplicando ingeniería inversa de defensa en scripts..."
+        for f in *.html; do
+          if [ -f "$f" ]; then
+            javascript-obfuscator "$f" --output "secure_build/$f" --compact true --self-defending true --string-array-encoding 'base64' --control-flow-flattening true
+          fi
+        done
+
+    - name: Desplegar Rama Segura Protegida
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: secure_build
+        branch: secure-streams
+        token: ${{ secrets.GITHUB_TOKEN }}
