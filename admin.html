@@ -1,41 +1,33 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<html lang="es" class="h-full bg-[#0a0a0a] text-[#e8e8e8]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acestream Player - Panel de Administración</title>
+    <title>TV++ - Panel Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Personalización de colores tema Acestream (Oscuro + Verde) */
-        .theme-accent { color: #84cc16; }
-        .theme-bg-accent { bg-color: #84cc16; }
-        .theme-border-accent { border-color: #84cc16; }
-        /* Scrollbar personalizado */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #84cc16; }
+        body { font-family: 'Segoe UI', -apple-system, sans-serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E50914; }
     </style>
 </head>
-<body class="h-full flex flex-col font-sans antialiased selection:bg-lime-500 selection:text-black">
+<body class="h-full flex flex-col antialiased selection:bg-[#E50914] selection:text-white">
 
-    <nav class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between shadow-lg">
+    <nav class="bg-[#141414] border-b border-[#2a2a2a] px-6 py-4 flex items-center justify-between shadow-xl">
         <div class="flex items-center space-x-3">
-            <div class="bg-lime-500 text-slate-950 p-2 rounded-lg font-black text-xl tracking-wider shadow-md shadow-lime-500/20">
-                AS
-            </div>
-            <div>
-                <span class="text-lg font-bold tracking-tight block">ACESTREAM PLAYER</span>
-                <span class="text-xs text-lime-400 font-medium tracking-widest uppercase">Panel de Administración</span>
+            <div class="text-2xl font-black italic tracking-tighter text-[#E50914] drop-shadow-[0_0_15px_rgba(229,9,20,0.4)]">
+                TV<span class="text-white">+</span><span class="text-xs block not-italic font-bold tracking-widest text-[#888] uppercase mt-[-4px]">ADMIN PANEL</span>
             </div>
         </div>
         <div class="flex items-center space-x-4">
-            <a href="https://hackalka.github.io/player/admin" target="_blank" class="text-xs text-slate-400 hover:text-lime-400 transition flex items-center gap-1 bg-slate-800 px-3 py-1.5 rounded-md border border-slate-700">
-                <i class="fa-solid fa-globe"></i> Ver producción
+            <a href="https://hackalka.github.io/player/admin" target="_blank" class="text-xs text-[#888] hover:text-[#E50914] transition flex items-center gap-1.5 bg-[#0a0a0a] px-3 py-2 rounded-md border border-[#2a2a2a]">
+                <i class="fa-solid fa-play text-xs"></i> Ver Reproductor
             </a>
-            <div class="h-8 w-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
-                <i class="fa-solid fa-user-shield text-sm"></i>
+            <div class="h-9 w-9 rounded-full bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center text-[#e8e8e8]">
+                <i class="fa-solid fa-user-gear text-sm"></i>
             </div>
         </div>
     </nav>
@@ -43,160 +35,140 @@
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 overflow-y-auto">
         
         <div class="lg:col-span-1 space-y-6">
-            
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl relative overflow-hidden group">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-lime-500 to-emerald-500"></div>
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up text-lime-400"></i> Subir Nueva Lista
+            <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl p-6 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-[3px] bg-[#E50914]"></div>
+                <h2 class="text-lg font-bold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-[#E50914]"></i> Actualizar Listas (.m3u / .json)
                 </h2>
-                <p class="text-xs text-slate-400 mb-4">Soporta archivos de listas de reproducción en formato <span class="text-slate-200 font-semibold">.json</span> o <span class="text-slate-200 font-semibold">.m3u</span>.</p>
+                <p class="text-xs text-[#888] mb-4">Sube tus archivos de canales actualizados para reemplazar los archivos estáticos dentro del directorio <span class="text-white font-mono bg-[#0a0a0a] px-1 py-0.5 rounded">listas/</span>.</p>
                 
                 <form action="/upload" method="post" enctype="multipart/form-data" class="space-y-4">
-                    <div class="border-2 border-dashed border-slate-700 hover:border-lime-500/50 rounded-xl p-6 text-center cursor-pointer transition bg-slate-950/50 relative">
-                        <input type="file" name="archivo" accept=".json,.m3u" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" id="fileInput">
+                    <div>
+                        <label class="block text-xs font-bold text-[#888] uppercase tracking-wider mb-1.5">Asignar Destino de Lista</label>
+                        <select name="tipo_lista" class="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg p-2.5 text-sm text-[#e8e8e8] focus:border-[#E50914] focus:outline-none">
+                            <option value="tv.m3u">📺 TV Básica (listas/tv.m3u)</option>
+                            <option value="tvplus.m3u">📡 TV+ DRM (listas/tvplus.m3u)</option>
+                            <option value="premium.m3u">💎 Premium DRM (listas/premium.m3u)</option>
+                            <option value="movies.json">🍿 Cine / Películas (listas/movies.json)</option>
+                            <option value="epg.xml">📅 Guía EPG (listas/epg.xml)</option>
+                        </select>
+                    </div>
+
+                    <div class="border-2 border-dashed border-[#2a2a2a] hover:border-[#E50914]/50 rounded-xl p-6 text-center cursor-pointer transition bg-[#0a0a0a]/50 relative">
+                        <input type="file" name="archivo" accept=".json,.m3u,.xml" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" id="fileInput">
                         <div class="space-y-2" id="fileInputPlaceholder">
-                            <i class="fa-solid fa-file-code text-3xl text-slate-500 group-hover:text-lime-400 transition"></i>
-                            <p class="text-sm font-medium text-slate-300">Arrastra tu archivo aquí o <span class="text-lime-400">búscalo</span></p>
-                            <p class="text-xs text-slate-500">JSON o M3U (Máx. 10MB)</p>
+                            <i class="fa-solid fa-file-video text-3xl text-[#2a2a2a]"></i>
+                            <p class="text-xs font-medium text-slate-300">Suelta tu archivo aquí o <span class="text-[#E50914]">búscalo</span></p>
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-lime-500 hover:bg-lime-400 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg shadow-lime-500/10 transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-upload"></i> Procesar y Guardar Lista
+
+                    <button type="submit" class="w-full bg-[#E50914] hover:bg-[#b8070f] text-white font-bold py-2.5 px-4 rounded-lg shadow-lg shadow-[#E50914]/10 transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-rotate"></i> Sobrescribir y Sincronizar
                     </button>
                 </form>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Estado del Sistema</h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center text-sm bg-slate-950 p-3 rounded-lg border border-slate-800">
-                        <span class="text-slate-400">Listas Activas</span>
-                        <span class="font-bold text-lime-400">2 activas</span>
-                    </div>
-                    <div class="flex justify-between items-center text-sm bg-slate-950 p-3 rounded-lg border border-slate-800">
-                        <span class="text-slate-400">Formato Preferido</span>
-                        <span class="font-bold text-blue-400">JSON / Acestream</span>
-                    </div>
-                </div>
+            <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5 text-xs text-[#888] space-y-2">
+                <span class="font-bold text-[#e8e8e8] uppercase block tracking-wider mb-1">Estructura esperada:</span>
+                <p>• Las listas <span class="text-[#f5c518]">M3U</span> deben usar <span class="text-slate-300 font-mono">#EXTINF</span> para logos y grupos.</p>
+                <p>• Las películas en <span class="text-[#f5c518]">JSON</span> deben coincidir con las llaves de renderizado de la cuadrícula de tu Cine.</p>
             </div>
-
         </div>
 
         <div class="lg:col-span-2 space-y-6">
-            
-            <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-hidden">
-                <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+            <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl shadow-2xl overflow-hidden">
+                <div class="p-6 border-b border-[#2a2a2a] flex justify-between items-center bg-[#141414]">
                     <div>
-                        <h2 class="text-xl font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-list-ul text-lime-400"></i> Listas y Enlaces Almacenados
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-folder-tree text-[#E50914]"></i> Ficheros Activos de SocramFlix+
                         </h2>
-                        <p class="text-xs text-slate-400 mt-1">Monitorea, edita o elimina el contenido actualmente cargado en tu reproductor.</p>
                     </div>
-                    <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-full border border-slate-700 font-mono">Total: 2</span>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-950 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
-                                <th class="py-4 px-6 font-semibold">Nombre de la Lista / ID</th>
-                                <th class="py-4 px-6 font-semibold">Tipo</th>
-                                <th class="py-4 px-6 font-semibold">Última Modificación</th>
-                                <th class="py-4 px-6 font-semibold text-right">Acciones</th>
+                            <tr class="bg-[#0a0a0a] text-[#888] uppercase tracking-wider border-b border-[#2a2a2a]">
+                                <th class="py-3 px-5 font-semibold">Archivo / Ruta</th>
+                                <th class="py-3 px-5 font-semibold">Sección Vinculada</th>
+                                <th class="py-3 px-5 font-semibold text-right">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-800/60 text-sm">
-                            <tr class="hover:bg-slate-800/30 transition">
-                                <td class="py-4 px-6 font-medium">
-                                    <div class="flex items-center gap-3">
-                                        <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg text-xs"><i class="fa-solid fa-code"></i></div>
-                                        <div>
-                                            <span class="block font-bold text-slate-200">canales_espana_premium</span>
-                                            <span class="text-xs text-slate-500 font-mono">ID: lst_001</span>
-                                        </div>
-                                    </div>
+                        <tbody class="divide-y divide-[#2a2a2a]/60 text-sm">
+                            <tr class="hover:bg-[#1c1c1c]/40 transition text-xs">
+                                <td class="py-3.5 px-5">
+                                    <span class="block font-bold text-slate-200 font-mono">listas/tv.m3u</span>
                                 </td>
-                                <td class="py-4 px-6">
-                                    <span class="bg-amber-500/10 text-amber-400 text-xs font-bold px-2 py-1 rounded border border-amber-500/20">JSON</span>
+                                <td class="py-3.5 px-5">
+                                    <span class="text-[#888]">📺 Sección TV Estándar</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-400 text-xs">Hoy, 14:22 PM</td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button onclick="abrirEditor('lst_001', 'canales_espana_premium.json')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg border border-slate-700 transition inline-flex items-center gap-1">
-                                        <i class="fa-solid fa-pen-to-square text-lime-400"></i> Editar
+                                <td class="py-3.5 px-5 text-right">
+                                    <button onclick="abrirEditor('tv.m3u', 'tv')" class="bg-[#0a0a0a] hover:bg-[#222] text-[#e8e8e8] px-3 py-1.5 rounded border border-[#2a2a2a] transition inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-sliders text-[#E50914]"></i> Gestionar
                                     </button>
-                                    <form action="/delete" method="POST" class="inline-block">
-                                        <input type="hidden" name="id" value="lst_001">
-                                        <button type="submit" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs px-3 py-1.5 rounded-lg border border-red-500/20 transition">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </form>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-slate-800/30 transition">
-                                <td class="py-4 px-6 font-medium">
-                                    <div class="flex items-center gap-3">
-                                        <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg text-xs"><i class="fa-solid fa-tv"></i></div>
-                                        <div>
-                                            <span class="block font-bold text-slate-200">deportes_acestream_global</span>
-                                            <span class="text-xs text-slate-500 font-mono">ID: lst_002</span>
-                                        </div>
-                                    </div>
+                            <tr class="hover:bg-[#1c1c1c]/40 transition text-xs">
+                                <td class="py-3.5 px-5">
+                                    <span class="block font-bold text-slate-200 font-mono">listas/tvplus.m3u</span>
                                 </td>
-                                <td class="py-4 px-6">
-                                    <span class="bg-blue-500/10 text-blue-400 text-xs font-bold px-2 py-1 rounded border border-blue-500/20">M3U</span>
+                                <td class="py-3.5 px-5">
+                                    <span class="text-blue-400 font-semibold">📡 Sección TV+ DRM</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-400 text-xs">Ayer, 09:15 AM</td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button onclick="abrirEditor('lst_002', 'deportes_acestream_global.m3u')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg border border-slate-700 transition inline-flex items-center gap-1">
-                                        <i class="fa-solid fa-pen-to-square text-lime-400"></i> Editar
+                                <td class="py-3.5 px-5 text-right">
+                                    <button onclick="abrirEditor('tvplus.m3u', 'tvplus')" class="bg-[#0a0a0a] hover:bg-[#222] text-[#e8e8e8] px-3 py-1.5 rounded border border-[#2a2a2a] transition inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-sliders text-[#E50914]"></i> Gestionar
                                     </button>
-                                    <form action="/delete" method="POST" class="inline-block">
-                                        <input type="hidden" name="id" value="lst_002">
-                                        <button type="submit" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs px-3 py-1.5 rounded-lg border border-red-500/20 transition">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </form>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-[#1c1c1c]/40 transition text-xs">
+                                <td class="py-3.5 px-5">
+                                    <span class="block font-bold text-slate-200 font-mono">listas/movies.json</span>
+                                </td>
+                                <td class="py-3.5 px-5">
+                                    <span class="text-[#f5c518]">🍿 Catálogo de Cine</span>
+                                </td>
+                                <td class="py-3.5 px-5 text-right">
+                                    <button onclick="abrirEditor('movies.json', 'movies')" class="bg-[#0a0a0a] hover:bg-[#222] text-[#e8e8e8] px-3 py-1.5 rounded border border-[#2a2a2a] transition inline-flex items-center gap-1">
+                                        <i class="fa-solid fa-sliders text-[#E50914]"></i> Gestionar
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </div>
     </main>
 
-    <div id="modalEditor" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-3xl shadow-2xl flex flex-col max-h-[85vh]">
-            
-            <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-lime-500 text-slate-950 rounded-lg text-sm font-bold"><i class="fa-solid fa-sliders"></i></div>
+    <div id="modalEditor" class="hidden fixed inset-0 bg-[#0a0a0a]/90 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl w-full max-w-3xl shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="p-5 border-b border-[#2a2a2a] flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-pen-to-square text-[#E50914] text-lg"></i>
                     <div>
-                        <h3 class="text-lg font-bold text-slate-100" id="modalTitulo">Modificar Elemento</h3>
-                        <p class="text-xs text-slate-400">ID de Referencia: <span id="modalIdLabel" class="font-mono text-lime-400"></span></p>
+                        <h3 class="text-base font-bold text-[#e8e8e8]" id="modalTitulo">Modificar Lista</h3>
+                        <p class="text-xs text-[#888]">Editor directo para aplicar parches inmediatos de streaming.</p>
                     </div>
                 </div>
-                <button onclick="cerrarEditor()" class="text-slate-400 hover:text-slate-200 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="cerrarEditor()" class="text-[#888] hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <form action="/edit" method="post" class="flex flex-col flex-1 overflow-hidden">
-                <input type="hidden" name="id" id="modalIdInput">
+                <input type="hidden" name="id_lista" id="modalIdInput">
 
-                <div class="p-6 space-y-4 flex-1 overflow-y-auto">
+                <div class="p-5 space-y-4 flex-1 overflow-y-auto">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contenido Raw de la Lista (JSON / M3U estructurado)</label>
-                        <p class="text-xs text-slate-500 mb-2">Puedes añadir nuevos canales o tokens de Acestream directamente en la sintaxis de abajo.</p>
-                        <textarea name="contenido_lista" id="modalTextArea" rows="12" class="w-full bg-slate-950 text-emerald-400 font-mono text-xs p-4 rounded-xl border border-slate-800 focus:outline-none focus:border-lime-500/50 focus:ring-1 focus:ring-lime-500/30 resize-none" placeholder="Cargando contenido..."></textarea>
+                        <textarea name="raw_data" id="modalTextArea" rows="14" class="w-full bg-[#0a0a0a] text-amber-400 font-mono text-xs p-4 rounded-lg border border-[#2a2a2a] focus:outline-none focus:border-[#E50914] resize-none" placeholder="Cargando líneas de datos..."></textarea>
                     </div>
                 </div>
 
-                <div class="p-4 bg-slate-950/50 border-t border-slate-800 flex justify-end gap-3">
-                    <button type="button" onclick="cerrarEditor()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition border border-slate-700">
-                        Cancelar
+                <div class="p-4 bg-[#0a0a0a]/50 border-t border-[#2a2a2a] flex justify-end gap-3 text-xs">
+                    <button type="button" onclick="cerrarEditor()" class="px-4 py-2 bg-[#1a1a1a] hover:bg-[#222] text-[#ccc] font-medium rounded-md transition border border-[#2a2a2a]">
+                        Cerrar sin guardar
                     </button>
-                    <button type="submit" class="px-5 py-2 bg-lime-500 hover:bg-lime-400 text-slate-950 text-sm font-bold rounded-lg transition shadow-lg shadow-lime-500/10 flex items-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                    <button type="submit" class="px-5 py-2 bg-[#E50914] hover:bg-[#b8070f] text-white font-bold rounded-md transition shadow-md">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Publicar Cambios
                     </button>
                 </div>
             </form>
@@ -204,37 +176,29 @@
     </div>
 
     <script>
-        // Cambiar dinámicamente el texto al seleccionar un archivo local
         const fileInput = document.getElementById('fileInput');
         const placeholder = document.getElementById('fileInputPlaceholder');
         
-        fileInput.addEventListener('change', (e) => {
+        fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name;
                 placeholder.innerHTML = `
-                    <i class="fa-solid fa-file-circle-check text-3xl text-lime-400"></i>
-                    <p class="text-sm font-semibold text-lime-400">${fileName}</p>
-                    <p class="text-xs text-slate-500">Listo para ser enviado</p>
+                    <i class="fa-solid fa-circle-check text-xl text-emerald-500"></i>
+                    <p class="text-xs font-semibold text-emerald-400">${fileInput.files[0].name}</p>
                 `;
             }
         });
 
-        // Simulación de contenidos por defecto al editar desde el Backend para ilustrar el editor
-        const contenidosDemo = {
-            'lst_001': '[\n  {\n    "name": "Canal Liga HD",\n    "acestream": "acestream://73d19fb5ba9527a4d52bb4c67ad25c2763bd8de4",\n    "logo": "https://example.com/logo.png"\n  }\n]',
-            'lst_002': '#EXTM3U\n#EXTINF:-1 tvg-logo="https://example.com/deportes.png",Deportes Directo\nacestream://84e20fc6ba9527a4d52bb4c67ad25c2763bd9ef5'
+        // Contenidos muestra que simulan lo que tu backend leería de tu carpeta /listas
+        const datosMock = {
+            'tv.m3u': '#EXTM3U\n#EXTINF:-1 tvg-logo="logos/la1.png" group-title="Generalistas",La 1 HD\nhttp://url-de-tu-streaming/la1.m3u8',
+            'tvplus.m3u': '#EXTM3U\n#EXTINF:-1 tvg-logo="logos/hbo.png" group-title="Cine DRM",HBO Pro\nhttp://licencia-shaka-drm/hbo.mpd',
+            'movies.json': '[\n  {\n    "title": "Película Ejemplo",\n    "poster": "https://image.tmdb.org/t/p/w500/ejemplo.jpg",\n    "url": "https://stream.server/movie.m3u8"\n  }\n]'
         };
 
-        // Lógica interactiva para el Editor en ventana modal
-        function abrirEditor(id, nombreArchivo) {
-            document.getElementById('modalIdInput').value = id;
-            document.getElementById('modalIdLabel').innerText = id;
-            document.getElementById('modalTitulo').innerText = `Editando: ${nombreArchivo}`;
-            
-            // Cargar el contenido de prueba (En tu backend real harías un fetch o inyectarías el string aquí)
-            document.getElementById('modalTextArea').value = contenidosDemo[id] || "";
-            
-            // Mostrar modal
+        function abrirEditor(archivoId, seccion) {
+            document.getElementById('modalIdInput').value = archivoId;
+            document.getElementById('modalTitulo').innerText = `Editor de Código: listas/${archivoId}`;
+            document.getElementById('modalTextArea').value = datosMock[archivoId] || "";
             document.getElementById('modalEditor').classList.remove('hidden');
         }
 
