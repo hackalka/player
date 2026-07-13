@@ -38,7 +38,7 @@
             display: block;
         }
 
-        /* BOTÓN DINÁMICO ACESTREAM */
+        /* BOTÓN DINÁMICO REPRODUCTOR EXTERNO */
         #btn-acestream-launcher {
             display: none; /* Oculto por defecto */
             width: 100%;
@@ -74,17 +74,24 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+        .select-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
         select {
             padding: 10px;
-            font-size: 16px;
+            font-size: 14px;
             background-color: #333;
             color: white;
             border: 1px solid #555;
             border-radius: 5px;
             outline: none;
             cursor: pointer;
+            font-weight: bold;
         }
         select:focus { border-color: var(--primary-color); }
+        select:disabled { opacity: 0.4; cursor: not-allowed; }
         
         #status {
             font-size: 14px;
@@ -123,20 +130,30 @@
 </head>
 <body>
 
-    <h2>TV+ <span style="color:white; font-size:12px; font-weight:normal; vertical-align:middle; margin-left:5px; background:#222; padding:3px 7px; border-radius:4px; border:1px solid #333;">ACESTREAM COMPATIBLE</span></h2>
+    <h2>TV+ <span style="color:white; font-size:12px; font-weight:normal; vertical-align:middle; margin-left:5px; background:#222; padding:3px 7px; border-radius:4px; border:1px solid #333;">MULTIPLUG PLAYER</span></h2>
     
     <div id="video-container">
         <video id="video" controls autoplay></video>
     </div>
 
+    <!-- Lanzador Externo Dinámico -->
     <a id="btn-acestream-launcher" href="#" target="_blank">
-        <span style="color: #fff; font-size:16px; margin-right:8px;">▶</span> ABRIR EN ACESTREAM PLAYER
+        ◀ ABRIR EN REPRODUCTOR EXTERNO ▶
     </a>
 
     <div class="controls-container">
-        <select id="filtro-categoria">
-            <option value="">Cargando categorías...</option>
-        </select>
+        <div class="select-group">
+            <select id="filtro-categoria">
+                <option value="">Cargando categorías...</option>
+            </select>
+            
+            <!-- NUEVO SELECTOR DE REPRODUCTOR -->
+            <select id="selector-reproductor" disabled>
+                <option value="acestream">🚀 App Oficial Acestream</option>
+                <option value="vlc">🧡 VLC Media Player</option>
+                <option value="mxplayer">🖤 MX Player (Android)</option>
+            </select>
+        </div>
         <div id="status">Cargando lista de canales...</div>
     </div>
 
@@ -145,6 +162,7 @@
     <script>
         let player;
         let todosLosCanales = [];
+        let canalSeleccionadoActivo = null;
 
         async function initApp() {
             shaka.polyfill.installAll();
@@ -158,6 +176,11 @@
             player = new shaka.Player(video);
             player.addEventListener('error', onErrorEvent);
 
+            // Escuchar cambios en el selector de reproductor para recalcular el link al vuelo
+            document.getElementById('selector-reproductor').addEventListener('change', () => {
+                if(canalSeleccionadoActivo) reproducirCanal(canalSeleccionadoActivo);
+            });
+
             await cargarJSON();
         }
 
@@ -165,37 +188,30 @@
             try {
                 const urlJson = 'canales.json?nocache=' + new Date().getTime();
                 const respuesta = await fetch(urlJson);
-                
-                if (!respuesta.ok) {
-                    throw new Error('No se encontró el archivo JSON o hubo un error de red.');
-                }
+                if (!respuesta.ok) throw new Error('Error de red al cargar JSON.');
                 
                 todosLosCanales = await respuesta.json();
-                
                 document.getElementById('status').innerText = 'Esperando selección...';
                 procesarCategorias();
             } catch (error) {
-                console.error('Error al cargar canales.json:', error);
-                document.getElementById('status').innerText = 'Error al cargar la lista de canales.';
+                console.error(error);
+                document.getElementById('status').innerText = 'Error al cargar los canales.';
             }
         }
 
         function procesarCategorias() {
             const select = document.getElementById('filtro-categoria');
             select.innerHTML = ''; 
-
-            // CORRECCIÓN AQUÍ: Lee tanto .group (del panel) como .categoria de forma segura
             const categorias = [...new Set(todosLosCanales.map(c => c.group || c.categoria).filter(Boolean))];
 
             if (categorias.length === 0) {
-                document.getElementById('status').innerText = 'No se encontraron categorías en el JSON.';
+                document.getElementById('status').innerText = 'Sin categorías.';
                 return;
             }
 
             categorias.forEach(cat => {
                 const opcion = document.createElement('option');
-                opcion.value = cat;
-                opcion.textContent = cat;
+                opcion.value = cat; opcion.textContent = cat;
                 select.appendChild(opcion);
             });
 
@@ -206,17 +222,16 @@
         function renderizarBotones(categoriaSeleccionada) {
             const contenedorLista = document.getElementById('lista-canales');
             contenedorLista.innerHTML = ''; 
-
-            // CORRECCIÓN AQUÍ: Filtra comparando ambos campos posibles (.group o .categoria)
             const canalesFiltrados = todosLosCanales.filter(c => (c.group || c.categoria) === categoriaSeleccionada);
 
             canalesFiltrados.forEach(canal => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-canal';
-                btn.innerText = canal.nombre || canal.name; // Soporta name del panel
+                btn.innerText = canal.nombre || canal.name;
                 btn.onclick = (e) => {
                     document.querySelectorAll('.btn-canal').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
+                    canalSeleccionadoActivo = canal;
                     reproducirCanal(canal);
                 };
                 contenedorLista.appendChild(btn);
@@ -224,74 +239,78 @@
         }
 
         async function reproducirCanal(canal) {
-            const btnAcestream = document.getElementById('btn-acestream-launcher');
+            const btnLauncher = document.getElementById('btn-acestream-launcher');
+            const selectRepro = document.getElementById('selector-reproductor');
             const videoElement = document.getElementById('video');
             const streamUrl = (canal.url || "").toLowerCase().trim();
             const nombreCanal = canal.nombre || canal.name || "Canal";
             
-            document.getElementById('status').innerText = 'Analizando stream: ' + nombreCanal + '...';
-
-            // INTERCEPTOR ROBUSTO DE ACESTREAM (Enlaces directos o localhost del motor)
             const esAcestreamDirecto = streamUrl.startsWith('acestream://');
             const esAcestreamLocal = streamUrl.includes('6878/ace/') || streamUrl.includes('127.0.0.1') || streamUrl.includes('localhost');
 
             if (esAcestreamDirecto || (esAcestreamLocal && streamUrl.includes('id='))) {
-                // Frenamos el reproductor HTML5 interno para que no lance error en pantalla
                 try { await player.unload(); } catch(e){}
                 videoElement.poster = ""; 
                 
-                let urlLanzamiento = canal.url;
+                // Habilitamos el selector de reproductor
+                selectRepro.disabled = false;
                 
-                // Si la URL viene de un motor local http://127.0.0.1:6878/ace/getstream?id=XXX
-                // la transformamos al protocolo nativo acestream://XXX para que aplicaciones externas lo abran directamente
-                if (!esAcestreamDirecto && esAcestreamLocal) {
+                // Extraer el ID puro de Acestream
+                let acestreamID = canal.url;
+                if (esAcestreamDirecto) {
+                    acestreamID = canal.url.replace(/acestream:\/\//i, '');
+                } else {
                     const idMatch = canal.url.match(/[?&]id=([^&]+)/i);
-                    if (idMatch && idMatch[1]) {
-                        urlLanzamiento = `acestream://${idMatch[1]}`;
-                    }
+                    if (idMatch && idMatch[1]) acestreamID = idMatch[1];
+                }
+
+                // Obtener qué reproductor prefiere el usuario
+                const reproductorElegido = selectRepro.value;
+                let urlFinalLanzamiento = `acestream://${acestreamID}`;
+                let textoBoton = `ABRIR EN APP ACESTREAM`;
+
+                if (reproductorElegido === 'vlc') {
+                    // Protocolo universal de VLC para móviles y PC
+                    urlFinalLanzamiento = `vlc://${canal.url}`;
+                    textoBoton = `ABRIR "${nombreCanal.toUpperCase()}" CON VLC PLAYER`;
+                } else if (reproductorElegido === 'mxplayer') {
+                    // Intent nativo para mandar el stream directamente a MX Player en Android
+                    urlFinalLanzamiento = `intent:${canal.url}#Intent;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(nombreCanal)};end`;
+                    textoBoton = `ABRIR "${nombreCanal.toUpperCase()}" CON MX PLAYER`;
+                } else {
+                    textoBoton = `ABRIR "${nombreCanal.toUpperCase()}" CON APP ACESTREAM`;
                 }
                 
-                // Forzamos la visualización limpia del botón de ejecución
-                btnAcestream.href = urlLanzamiento;
-                btnAcestream.style.display = 'block';
-                btnAcestream.innerHTML = `<span style="color: #fff; font-size:16px; margin-right:8px;">▶</span> ABRIR "${nombreCanal.toUpperCase()}" CON ACESTREAM`;
+                btnLauncher.href = urlFinalLanzamiento;
+                btnLauncher.style.display = 'block';
+                btnLauncher.innerHTML = `<span style="color: #fff; font-size:16px; margin-right:8px;">▶</span> ${textoBoton}`;
                 
-                document.getElementById('status').innerText = 'Enlace Acestream detectado. Pulsa el botón superior para reproducir.';
+                document.getElementById('status').innerText = `Modo externo activo. Selecciona tu reproductor favorito e inicia el botón rojo.`;
                 return; 
             }
 
-            // Si es un stream HTTP normal, ocultamos el botón de lanzador
-            btnAcestream.style.display = 'none';
+            // Si es un enlace HTTP/M3U8 normal, bloqueamos el selector externo y reproducimos dentro de la web
+            selectRepro.disabled = true;
+            btnLauncher.style.display = 'none';
 
             try {
                 if (canal.kid && canal.key) {
                     const clearKeysConfig = {};
                     clearKeysConfig[canal.kid] = canal.key;
-                    
-                    player.configure({
-                        drm: { clearKeys: clearKeysConfig }
-                    });
+                    player.configure({ drm: { clearKeys: clearKeysConfig } });
                 } else {
-                    player.configure({
-                        drm: { clearKeys: {} }
-                    });
+                    player.configure({ drm: { clearKeys: {} } });
                 }
 
                 await player.load(canal.url);
-                document.getElementById('status').innerText = 'Reproduciendo: ' + nombreCanal;
+                document.getElementById('status').innerText = 'Reproduciendo internamente: ' + nombreCanal;
             } catch (e) {
-                onError(e);
+                console.error(e);
+                document.getElementById('status').innerText = 'Error de carga en el reproductor interno web.';
             }
         }
 
-        function onErrorEvent(event) {
-            onError(event.detail);
-        }
-
-        function onError(error) {
-            console.error('Error Code:', error.code, 'Detalles:', error);
-            document.getElementById('status').innerText = 'Error al reproducir el canal (CORS o enlace caído).';
-        }
+        function onErrorEvent(event) { console.error(event.detail); }
 
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
