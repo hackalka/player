@@ -63,9 +63,6 @@
             transform: scale(1.02);
             box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
         }
-        #btn-acestream-launcher i {
-            margin-right: 8px;
-        }
         
         .controls-container {
             width: 100%;
@@ -228,25 +225,40 @@
         async function reproducirCanal(canal) {
             const btnAcestream = document.getElementById('btn-acestream-launcher');
             const videoElement = document.getElementById('video');
+            const streamUrl = canal.url.toLowerCase().trim();
             
             document.getElementById('status').innerText = 'Cargando: ' + canal.nombre + '...';
 
-            // INTERCEPTOR DE PROTOCOLO ACESTREAM
-            if (canal.url.toLowerCase().startsWith('acestream://')) {
-                // Detener cualquier reproducción interna que esté ocurriendo
+            // INTERCEPTOR ROBUSTO DE LAS DOS MANERAS DE ACESTREAM
+            const esAcestreamDirecto = streamUrl.startsWith('acestream://');
+            const esAcestreamLocal = streamUrl.includes('127.0.0.1:6878/ace/') || streamUrl.includes('localhost:6878/ace/');
+
+            if (esAcestreamDirecto || esAcestreamLocal) {
+                // Detener transmisiones HLS/DASH activas para no colgar el navegador
                 try { await player.unload(); } catch(e){}
                 videoElement.poster = ""; 
                 
-                // Configurar y mostrar el botón de lanzamiento de aplicación
-                btnAcestream.href = canal.url;
+                // Si el enlace es de motor local pero lo abres en un dispositivo externo, 
+                // aseguramos el enlace nativo de lanzamiento directo de protocolo
+                let urlLanzamiento = canal.url;
+                if (esAcestreamLocal && esAcestreamDirecto === false) {
+                    // Extraemos el ID del stream si viene en el formato getstream?id=
+                    const idMatch = canal.url.match(/[?&]id=([^&]+)/i);
+                    if (idMatch && idMatch[1]) {
+                        urlLanzamiento = `acestream://${idMatch[1]}`;
+                    }
+                }
+                
+                // Activar e inyectar el link en el botón visual
+                btnAcestream.href = urlLanzamiento;
                 btnAcestream.style.display = 'block';
                 btnAcestream.innerHTML = `<span style="color: #e50914; font-size:18px; margin-right:8px;">▶</span> ABRIR "${canal.nombre.toUpperCase()}" EN ACESTREAM`;
                 
-                document.getElementById('status').innerText = 'Enlace Acestream detectado. Usa el botón rojo para abrir.';
-                return; // Cortamos la ejecución para que Shaka Player no intente procesarlo
+                document.getElementById('status').innerText = 'Motor Acestream detectado. Ejecuta el botón rojo.';
+                return; // Frenamos a Shaka Player aquí
             }
 
-            // Si es un canal normal HTTP / M3U8 / MPD, volvemos a ocultar el botón especial
+            // Si es un stream HTTP normal (M3U8 / MPD), el botón de la app nativa se oculta
             btnAcestream.style.display = 'none';
 
             try {
