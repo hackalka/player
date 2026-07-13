@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js"></script>
     <style>
         :root {
-            --primary-color: #e50914; /* Rojo */
+            --primary-color: #e50914; /* Rojo Acestream */
             --bg-color: #141414;
             --text-color: #ffffff;
         }
@@ -21,7 +21,7 @@
             flex-direction: column;
             align-items: center;
         }
-        h2 { margin-top: 0; color: var(--primary-color); }
+        h2 { margin-top: 0; color: var(--primary-color); letter-spacing: -1px; font-weight: 900; }
         
         #video-container {
             width: 100%;
@@ -56,12 +56,12 @@
             transition: all 0.2s ease;
             text-decoration: none;
             box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.2);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
         }
         #btn-acestream-launcher:hover {
             background-color: var(--primary-color);
             transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.5);
         }
         
         .controls-container {
@@ -123,14 +123,14 @@
 </head>
 <body>
 
-    <h2>TV+</h2>
+    <h2>TV+ <span style="color:white; font-size:12px; font-weight:normal; vertical-align:middle; margin-left:5px; background:#222; padding:3px 7px; border-radius:4px; border:1px solid #333;">ACESTREAM COMPATIBLE</span></h2>
     
     <div id="video-container">
         <video id="video" controls autoplay></video>
     </div>
 
     <a id="btn-acestream-launcher" href="#" target="_blank">
-        <span style="color: #e50914;">▶</span> ABRIR EN ACESTREAM PLAYER
+        <span style="color: #fff; font-size:16px; margin-right:8px;">▶</span> ABRIR EN ACESTREAM PLAYER
     </a>
 
     <div class="controls-container">
@@ -140,8 +140,7 @@
         <div id="status">Cargando lista de canales...</div>
     </div>
 
-    <div id="lista-canales">
-        </div>
+    <div id="lista-canales"></div>
 
     <script>
         let player;
@@ -185,7 +184,8 @@
             const select = document.getElementById('filtro-categoria');
             select.innerHTML = ''; 
 
-            const categorias = [...new Set(todosLosCanales.map(c => c.categoria).filter(Boolean))];
+            // CORRECCIÓN AQUÍ: Lee tanto .group (del panel) como .categoria de forma segura
+            const categorias = [...new Set(todosLosCanales.map(c => c.group || c.categoria).filter(Boolean))];
 
             if (categorias.length === 0) {
                 document.getElementById('status').innerText = 'No se encontraron categorías en el JSON.';
@@ -207,12 +207,13 @@
             const contenedorLista = document.getElementById('lista-canales');
             contenedorLista.innerHTML = ''; 
 
-            const canalesFiltrados = todosLosCanales.filter(c => c.categoria === categoriaSeleccionada);
+            // CORRECCIÓN AQUÍ: Filtra comparando ambos campos posibles (.group o .categoria)
+            const canalesFiltrados = todosLosCanales.filter(c => (c.group || c.categoria) === categoriaSeleccionada);
 
             canalesFiltrados.forEach(canal => {
                 const btn = document.createElement('button');
                 btn.className = 'btn-canal';
-                btn.innerText = canal.nombre;
+                btn.innerText = canal.nombre || canal.name; // Soporta name del panel
                 btn.onclick = (e) => {
                     document.querySelectorAll('.btn-canal').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
@@ -225,40 +226,41 @@
         async function reproducirCanal(canal) {
             const btnAcestream = document.getElementById('btn-acestream-launcher');
             const videoElement = document.getElementById('video');
-            const streamUrl = canal.url.toLowerCase().trim();
+            const streamUrl = (canal.url || "").toLowerCase().trim();
+            const nombreCanal = canal.nombre || canal.name || "Canal";
             
-            document.getElementById('status').innerText = 'Cargando: ' + canal.nombre + '...';
+            document.getElementById('status').innerText = 'Analizando stream: ' + nombreCanal + '...';
 
-            // INTERCEPTOR ROBUSTO DE LAS DOS MANERAS DE ACESTREAM
+            // INTERCEPTOR ROBUSTO DE ACESTREAM (Enlaces directos o localhost del motor)
             const esAcestreamDirecto = streamUrl.startsWith('acestream://');
-            const esAcestreamLocal = streamUrl.includes('127.0.0.1:6878/ace/') || streamUrl.includes('localhost:6878/ace/');
+            const esAcestreamLocal = streamUrl.includes('6878/ace/') || streamUrl.includes('127.0.0.1') || streamUrl.includes('localhost');
 
-            if (esAcestreamDirecto || esAcestreamLocal) {
-                // Detener transmisiones HLS/DASH activas para no colgar el navegador
+            if (esAcestreamDirecto || (esAcestreamLocal && streamUrl.includes('id='))) {
+                // Frenamos el reproductor HTML5 interno para que no lance error en pantalla
                 try { await player.unload(); } catch(e){}
                 videoElement.poster = ""; 
                 
-                // Si el enlace es de motor local pero lo abres en un dispositivo externo, 
-                // aseguramos el enlace nativo de lanzamiento directo de protocolo
                 let urlLanzamiento = canal.url;
-                if (esAcestreamLocal && esAcestreamDirecto === false) {
-                    // Extraemos el ID del stream si viene en el formato getstream?id=
+                
+                // Si la URL viene de un motor local http://127.0.0.1:6878/ace/getstream?id=XXX
+                // la transformamos al protocolo nativo acestream://XXX para que aplicaciones externas lo abran directamente
+                if (!esAcestreamDirecto && esAcestreamLocal) {
                     const idMatch = canal.url.match(/[?&]id=([^&]+)/i);
                     if (idMatch && idMatch[1]) {
                         urlLanzamiento = `acestream://${idMatch[1]}`;
                     }
                 }
                 
-                // Activar e inyectar el link en el botón visual
+                // Forzamos la visualización limpia del botón de ejecución
                 btnAcestream.href = urlLanzamiento;
                 btnAcestream.style.display = 'block';
-                btnAcestream.innerHTML = `<span style="color: #e50914; font-size:18px; margin-right:8px;">▶</span> ABRIR "${canal.nombre.toUpperCase()}" EN ACESTREAM`;
+                btnAcestream.innerHTML = `<span style="color: #fff; font-size:16px; margin-right:8px;">▶</span> ABRIR "${nombreCanal.toUpperCase()}" CON ACESTREAM`;
                 
-                document.getElementById('status').innerText = 'Motor Acestream detectado. Ejecuta el botón rojo.';
-                return; // Frenamos a Shaka Player aquí
+                document.getElementById('status').innerText = 'Enlace Acestream detectado. Pulsa el botón superior para reproducir.';
+                return; 
             }
 
-            // Si es un stream HTTP normal (M3U8 / MPD), el botón de la app nativa se oculta
+            // Si es un stream HTTP normal, ocultamos el botón de lanzador
             btnAcestream.style.display = 'none';
 
             try {
@@ -276,7 +278,7 @@
                 }
 
                 await player.load(canal.url);
-                document.getElementById('status').innerText = 'Reproduciendo: ' + canal.nombre;
+                document.getElementById('status').innerText = 'Reproduciendo: ' + nombreCanal;
             } catch (e) {
                 onError(e);
             }
@@ -293,6 +295,5 @@
 
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
-
 </body>
 </html>
