@@ -2,13 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TV+ | TV en Vivo</title>
-    <!-- Shaka Player CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js"></script>
     <style>
         :root {
-            --primary-color: #e50914; /* Rojo*/
+            --primary-color: #e50914; /* Rojo */
             --bg-color: #141414;
             --text-color: #ffffff;
         }
@@ -32,10 +31,40 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             margin-bottom: 20px;
+            position: relative;
         }
         video {
             width: 100%;
             display: block;
+        }
+
+        /* BOTÓN DINÁMICO ACESTREAM */
+        #btn-acestream-launcher {
+            display: none; /* Oculto por defecto */
+            width: 100%;
+            max-width: 600px;
+            background-color: #1a1a1a;
+            color: white;
+            border: 2px solid var(--primary-color);
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.2);
+        }
+        #btn-acestream-launcher:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+        #btn-acestream-launcher i {
+            margin-right: 8px;
         }
         
         .controls-container {
@@ -103,6 +132,10 @@
         <video id="video" controls autoplay></video>
     </div>
 
+    <a id="btn-acestream-launcher" href="#" target="_blank">
+        <span style="color: #e50914;">▶</span> ABRIR EN ACESTREAM PLAYER
+    </a>
+
     <div class="controls-container">
         <select id="filtro-categoria">
             <option value="">Cargando categorías...</option>
@@ -111,8 +144,7 @@
     </div>
 
     <div id="lista-canales">
-        <!-- Los botones se generarán aquí con JavaScript -->
-    </div>
+        </div>
 
     <script>
         let player;
@@ -135,7 +167,6 @@
 
         async function cargarJSON() {
             try {
-                // Aquí aplicamos el truco para evitar la caché de GitHub Pages
                 const urlJson = 'canales.json?nocache=' + new Date().getTime();
                 const respuesta = await fetch(urlJson);
                 
@@ -155,9 +186,8 @@
 
         function procesarCategorias() {
             const select = document.getElementById('filtro-categoria');
-            select.innerHTML = ''; // Limpiar opciones
+            select.innerHTML = ''; 
 
-            // Extraer categorías únicas de la lista, ignorando las vacías si las hay
             const categorias = [...new Set(todosLosCanales.map(c => c.categoria).filter(Boolean))];
 
             if (categorias.length === 0) {
@@ -172,16 +202,13 @@
                 select.appendChild(opcion);
             });
 
-            // Escuchar cambios en el menú desplegable
             select.addEventListener('change', (e) => renderizarBotones(e.target.value));
-
-            // Renderizar la primera categoría por defecto
             renderizarBotones(categorias[0]);
         }
 
         function renderizarBotones(categoriaSeleccionada) {
             const contenedorLista = document.getElementById('lista-canales');
-            contenedorLista.innerHTML = ''; // Limpiar botones actuales
+            contenedorLista.innerHTML = ''; 
 
             const canalesFiltrados = todosLosCanales.filter(c => c.categoria === categoriaSeleccionada);
 
@@ -190,7 +217,6 @@
                 btn.className = 'btn-canal';
                 btn.innerText = canal.nombre;
                 btn.onclick = (e) => {
-                    // Quitar clase active de todos y ponerla al clickeado
                     document.querySelectorAll('.btn-canal').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
                     reproducirCanal(canal);
@@ -200,10 +226,30 @@
         }
 
         async function reproducirCanal(canal) {
+            const btnAcestream = document.getElementById('btn-acestream-launcher');
+            const videoElement = document.getElementById('video');
+            
             document.getElementById('status').innerText = 'Cargando: ' + canal.nombre + '...';
 
+            // INTERCEPTOR DE PROTOCOLO ACESTREAM
+            if (canal.url.toLowerCase().startsWith('acestream://')) {
+                // Detener cualquier reproducción interna que esté ocurriendo
+                try { await player.unload(); } catch(e){}
+                videoElement.poster = ""; 
+                
+                // Configurar y mostrar el botón de lanzamiento de aplicación
+                btnAcestream.href = canal.url;
+                btnAcestream.style.display = 'block';
+                btnAcestream.innerHTML = `<span style="color: #e50914; font-size:18px; margin-right:8px;">▶</span> ABRIR "${canal.nombre.toUpperCase()}" EN ACESTREAM`;
+                
+                document.getElementById('status').innerText = 'Enlace Acestream detectado. Usa el botón rojo para abrir.';
+                return; // Cortamos la ejecución para que Shaka Player no intente procesarlo
+            }
+
+            // Si es un canal normal HTTP / M3U8 / MPD, volvemos a ocultar el botón especial
+            btnAcestream.style.display = 'none';
+
             try {
-                // Verificar si el canal tiene claves ClearKey o es libre
                 if (canal.kid && canal.key) {
                     const clearKeysConfig = {};
                     clearKeysConfig[canal.kid] = canal.key;
@@ -212,7 +258,6 @@
                         drm: { clearKeys: clearKeysConfig }
                     });
                 } else {
-                    // Si no tiene claves, vaciamos la configuración DRM para que no falle
                     player.configure({
                         drm: { clearKeys: {} }
                     });
@@ -234,7 +279,6 @@
             document.getElementById('status').innerText = 'Error al reproducir el canal (CORS o enlace caído).';
         }
 
-        // Iniciar todo
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 
