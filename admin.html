@@ -36,7 +36,6 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-73px)] overflow-hidden">
         
-        <!-- SIDEBAR DE CONTROLES -->
         <div class="lg:col-span-1 flex flex-col space-y-4 h-full overflow-y-auto pr-2">
             
             <div class="bg-[#141414] border border-[#2a2a2a] rounded-xl p-5 shadow-xl border-dashed border-emerald-500/40">
@@ -93,7 +92,6 @@
             </button>
         </div>
 
-        <!-- TABLA CENTRAL OPERATIVA -->
         <div class="lg:col-span-3 bg-[#141414] border border-[#2a2a2a] rounded-xl flex flex-col h-full overflow-hidden shadow-2xl">
             
             <div class="p-4 border-b border-[#2a2a2a] bg-[#1a1a1a] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -103,12 +101,11 @@
                     </h2>
                     <p class="text-[11px] text-[#888]">Canales cargados en tiempo real: <span id="contador-canales" class="text-emerald-400 font-bold">0</span></p>
                 </div>
-                <div id="status-badge" class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-[#0a0a0a] text-slate-500 border border-slate-800">
+                <div id="status-badge" class="text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-[#0a0a0a] text-slate-500 border border-slate-800 max-w-xs truncate">
                     Desconectado
                 </div>
             </div>
 
-            <!-- FILTROS DE EDICIÓN MASIVA Y BÚSQUEDA -->
             <div class="p-3 bg-[#111] border-b border-[#2a2a2a] flex flex-wrap gap-4 items-center justify-between text-xs">
                 <div class="flex items-center gap-2 bg-[#0a0a0a] p-1.5 rounded-lg border border-[#2a2a2a]">
                     <span class="text-[#888] font-semibold"><i class="fa-solid fa-tags text-[#E50914]"></i> Grupo Masivo:</span>
@@ -130,7 +127,6 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR DE LA TABLA -->
             <div class="flex-1 overflow-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
@@ -153,6 +149,7 @@
     </main>
 
     <script>
+        // Cambia estos dos valores con los datos exactos de tu GitHub
         const REPO_OWNER = "hackalka";
         const REPO_NAME = "player";
         
@@ -171,7 +168,6 @@
             escanearRepositorio();
         }
 
-        // CONTROLADOR DE SUBIDA LOCAL
         function importarArchivoLocal(input) {
             const file = input.files[0];
             if (!file) return;
@@ -197,26 +193,16 @@
                 renderizarTabla();
                 
                 actualizarStatus("Editor Listo", "emerald");
-                alert(`¡Importación Completa!\nSe han clasificado ${datosLocalesParseados.length} canales en la lista.`);
             };
             reader.readAsText(file, "UTF-8");
         }
 
         function aplicarCategoriaMasiva() {
             const nuevaCat = document.getElementById('categoria-masiva-input').value.trim();
-            if(!nuevaCat) {
-                alert("Escribe el nombre de la categoría o grupo que deseas asignar.");
-                return;
-            }
-            if(datosLocalesParseados.length === 0) {
-                alert("No hay canales en la tabla para modificar.");
-                return;
-            }
+            if(!nuevaCat) return;
+            if(datosLocalesParseados.length === 0) return;
 
-            datosLocalesParseados.forEach(item => {
-                item.group = nuevaCat;
-            });
-
+            datosLocalesParseados.forEach(item => { item.group = nuevaCat; });
             actualizarFiltrosGrupo();
             document.getElementById('filtro-grupo').value = nuevaCat;
             renderizarTabla();
@@ -227,10 +213,7 @@
             const valorActual = selectorFiltro.value;
             const gruposUnicos = new Set();
             
-            datosLocalesParseados.forEach(item => {
-                if(item.group) gruposUnicos.add(item.group);
-            });
-
+            datosLocalesParseados.forEach(item => { if(item.group) gruposUnicos.add(item.group); });
             selectorFiltro.innerHTML = '<option value="TODOS">-- Ver Todas las Categorías --</option>';
             gruposUnicos.forEach(grupo => {
                 const opt = document.createElement('option');
@@ -238,10 +221,7 @@
                 opt.innerText = grupo;
                 selectorFiltro.appendChild(opt);
             });
-
-            if([...gruposUnicos].includes(valorActual)) {
-                selectorFiltro.value = valorActual;
-            }
+            if([...gruposUnicos].includes(valorActual)) selectorFiltro.value = valorActual;
         }
 
         function buscarShaExistente(nombreArchivo) {
@@ -256,7 +236,6 @@
             }
         }
 
-        // REPOSITORIO MAPPER
         async function escanearRepositorio() {
             if(!tokenGitHub) return;
             actualizarStatus("Mapeando...", "amber");
@@ -264,12 +243,14 @@
             try {
                 const headers = {
                     "Accept": "application/vnd.github+json",
-                    "X-GitHub-Api-Version": "2022-11-28",
                     "Authorization": `token ${tokenGitHub}`
                 };
 
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/main?recursive=1&t=${Date.now()}`, { headers: headers });
-                if(!response.ok) throw new Error("Acceso denegado.");
+                
+                if(!response.ok) {
+                    throw new Error(`Error ${response.status}: Revisa token, usuario o repositorio.`);
+                }
                 
                 const data = await response.json();
                 const archivosValidos = data.tree.filter(item => {
@@ -293,7 +274,7 @@
 
             } catch (error) {
                 console.error(error);
-                actualizarStatus("Error Mapeo", "red");
+                actualizarStatus(error.message, "red");
             }
         }
 
@@ -307,18 +288,16 @@
             try {
                 const headers = {
                     "Accept": "application/vnd.github+json",
-                    "X-GitHub-Api-Version": "2022-11-28",
                     "Authorization": `token ${tokenGitHub}`
                 };
 
                 const urlSegura = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodeURIComponent(rutaArchivo)}?t=${Date.now()}`;
                 const response = await fetch(urlSegura, { headers: headers });
 
-                if (!response.ok) throw new Error(`Código ${response.status}`);
+                if (!response.ok) throw new Error(`Error al leer archivo (${response.status})`);
                 
                 const jsonRes = await response.json();
                 currentFileSha = jsonRes.sha;
-                
                 const contenidoRaw = decodeBase64Utf8(jsonRes.content);
                 
                 if (rutaArchivo.toLowerCase().endsWith('.json')) {
@@ -333,7 +312,7 @@
 
             } catch (error) {
                 console.error(error);
-                actualizarStatus("Error", "red");
+                actualizarStatus(error.message, "red");
             }
         }
 
@@ -341,13 +320,10 @@
             const cleanBase64 = base64Str.replace(/\s/g, '');
             const rawBinary = atob(cleanBase64);
             const bytes = new Uint8Array(rawBinary.length);
-            for (let i = 0; i < rawBinary.length; i++) {
-                bytes[i] = rawBinary.charCodeAt(i);
-            }
+            for (let i = 0; i < rawBinary.length; i++) { bytes[i] = rawBinary.charCodeAt(i); }
             return new TextDecoder("utf-8").decode(bytes);
         }
 
-        // PARSER M3U
         function parsearM3U(rawText) {
             const lines = rawText.split(/\r?\n/);
             const lista = [];
@@ -376,7 +352,6 @@
             return lista;
         }
 
-        // PARSER JSON
         function parsearJSON(rawText) {
             try {
                 const data = JSON.parse(rawText);
@@ -398,9 +373,7 @@
                     }));
                 }
                 return [];
-            } catch (e) {
-                return [];
-            }
+            } catch (e) { return []; }
         }
 
         function serializarM3U(objetos) {
@@ -411,11 +384,8 @@
             return m3uString;
         }
 
-        function serializarJSON(objetos) {
-            return JSON.stringify(objetos, null, 4);
-        }
+        function serializarJSON(objetos) { return JSON.stringify(objetos, null, 4); }
 
-        // RENDEREADO CON FILTRADO ACTIVO Y BUSCADOR COMPLEMENTARIO
         function renderizarTabla() {
             const tbody = document.getElementById('tabla-elementos');
             tbody.innerHTML = "";
@@ -434,7 +404,7 @@
             document.getElementById('contador-canales').innerText = `${datosFiltrados.length} / ${datosLocalesParseados.length}`;
 
             if(datosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">Ningún registro coincide con el criterio actual de visualización.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#888] italic">Ningún registro coincide.</td></tr>`;
                 return;
             }
 
@@ -443,7 +413,6 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-[#1c1c1c]/40 transition text-xs border-b border-[#2a2a2a]/40";
                 
-                // Formateo visual dinámico si es un enlace Acestream
                 const esAce = elem.url.toLowerCase().startsWith('acestream://') || elem.url.includes('6878/ace/');
                 const urlInputClass = esAce 
                     ? "w-full bg-transparent border-0 focus:bg-[#0a0a0a] focus:ring-1 focus:ring-[#E50914] rounded p-1 text-[#E50914] font-bold font-mono text-[11px]"
@@ -473,12 +442,10 @@
             });
         }
 
-        function actualizarCelda(index, campo, valor) {
-            datosLocalesParseados[index][campo] = valor;
-        }
+        function actualizarCelda(index, campo, valor) { datosLocalesParseados[index][campo] = valor; }
 
         function eliminarFila(index) {
-            if(confirm("¿Estás seguro de que deseas eliminar este canal de la memoria actual?")) {
+            if(confirm("¿Eliminar este canal?")) {
                 datosLocalesParseados.splice(index, 1);
                 actualizarFiltrosGrupo();
                 renderizarTabla();
@@ -491,10 +458,7 @@
             const logo = document.getElementById('nuevo-logo').value.trim();
             const url = document.getElementById('nuevo-url').value.trim();
 
-            if(!nombre || !url) {
-                alert("Asigna obligatoriamente un nombre y una dirección URL.");
-                return;
-            }
+            if(!nombre || !url) return;
 
             datosLocalesParseados.push({ name: nombre, group: grupo || "General", logo: logo, url: url });
             actualizarFiltrosGrupo();
@@ -505,83 +469,60 @@
             document.getElementById('nuevo-logo').value = "";
         }
 
-        // GUARDADO TOTAL DESPLIEGUE ATÓMICO
         async function guardarCambiosEnGitHub() {
             const rutaDestino = document.getElementById('ruta-destino-manual').value.trim();
             if(!rutaDestino || !tokenGitHub) {
-                alert("Define la ruta de destino y asegúrate de inyectar tu token válido.");
+                alert("Ruta vacía o falta token.");
                 return;
             }
 
             actualizarStatus("Subiendo...", "amber");
-            
-            let contenidoFinalString = "";
-            if (rutaDestino.toLowerCase().endsWith('.json')) {
-                contenidoFinalString = serializarJSON(datosLocalesParseados);
-            } else {
-                contenidoFinalString = serializarM3U(datosLocalesParseados);
-            }
+            let contenidoFinalString = rutaDestino.toLowerCase().endsWith('.json') ? serializarJSON(datosLocalesParseados) : serializarM3U(datosLocalesParseados);
             
             const encoder = new TextEncoder();
             const dataData = encoder.encode(contenidoFinalString);
             let binaria = "";
-            for (let i = 0; i < dataData.byteLength; i++) {
-                binaria += String.fromCharCode(dataData[i]);
-            }
+            for (let i = 0; i < dataData.byteLength; i++) { binaria += String.fromCharCode(dataData[i]); }
             const contenidoBase64 = btoa(binaria);
 
-            const payload = {
-                message: `TV++ Core Sync: Inyección en ${rutaDestino}`,
-                content: contenidoBase64
-            };
-
-            if (currentFileSha) {
-                payload.sha = currentFileSha;
-            }
+            const payload = { message: `TV++ Sync: Update ${rutaDestino}`, content: contenidoBase64 };
+            if (currentFileSha) payload.sha = currentFileSha;
 
             try {
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodeURIComponent(rutaDestino)}`, {
                     method: "PUT",
                     headers: {
                         "Accept": "application/vnd.github+json",
-                        "X-GitHub-Api-Version": "2022-11-28",
                         "Authorization": `token ${tokenGitHub}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(payload)
                 });
 
-                if(!response.ok) throw new Error(`Status ${response.status}`);
+                if(!response.ok) throw new Error(`Error ${response.status} al subir cambios.`);
 
                 const resJson = await response.json();
                 currentFileSha = resJson.content.sha; 
                 
-                alert(`¡Sincronización total completada!\nEl archivo '${rutaDestino}' se ha subido correctamente.`);
+                alert("¡Subido correctamente a GitHub!");
                 actualizarStatus("Guardado", "emerald");
                 escanearRepositorio(); 
 
             } catch (error) {
                 console.error(error);
-                alert(`Error al inyectar cambios: ${error.message}`);
-                actualizarStatus("Error", "red");
+                alert(error.message);
+                actualizarStatus("Error Guardado", "red");
             }
         }
 
         function actualizarStatus(texto, tipoColor) {
             const badge = document.getElementById('status-badge');
             badge.innerText = texto;
-            
-            // Mapeo seguro para Tailwind CSS plano sin interpolación rota
-            badge.className = "text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-[#0a0a0a] border";
-            if (tipoColor === "emerald") {
-                badge.classList.add("border-emerald-500", "text-emerald-400");
-            } else if (tipoColor === "amber") {
-                badge.classList.add("border-amber-500", "text-amber-400");
-            } else if (tipoColor === "red") {
-                badge.classList.add("border-red-500", "text-red-400");
-            } else {
-                badge.classList.add("border-slate-800", "text-slate-500");
-            }
+            badge.className = "text-[10px] font-bold uppercase px-2.5 py-1 rounded bg-[#0a0a0a] border max-w-xs truncate";
+            if (tipoColor === "emerald") badge.classList.add("border-emerald-500", "text-emerald-400");
+            else if (tipoColor === "amber") badge.classList.add("border-amber-500", "text-amber-400");
+            else if (tipoColor === "red") badge.classList.add("border-red-500", "text-red-400");
+            else badge.classList.add("border-slate-800", "text-slate-500");
         }
     </script>
 </body>
